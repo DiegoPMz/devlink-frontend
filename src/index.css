@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  body {
+    @apply bg-black;
+    @apply min-h-[100dvh];
+  }
+}
+
+@layer utilities {
+  .bg-appCustom {
+    background-color: #fafafa;
+    opacity: 1;
+    background-size: 66px 66px;
+    background-image: repeating-linear-gradient(
+      to right,
+      #f7f7f7,
+      #f7f7f7 3.3000000000000003px,
+      #fafafa 3.3000000000000003px,
+      #fafafa
+    );
+  }
+}
