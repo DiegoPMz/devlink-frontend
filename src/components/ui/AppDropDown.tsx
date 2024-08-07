@@ -10,13 +10,22 @@ type OptionsArrayType = OptionType[];
 
 interface AppDropDownProps {
   options: OptionsArrayType;
+  onChange?: (...event: unknown[]) => void;
+  selected?: string | null;
+  error?: string;
 }
 
-export const AppDropDown = ({ options }: AppDropDownProps) => {
+export const AppDropDown = ({
+  options,
+  onChange,
+  selected,
+  error,
+}: AppDropDownProps) => {
   const [optionValue, setOptionValue] = useState<string>("");
   const [labelSelected, setLabelSelected] = useState<
     OptionType["label"] | null
-  >();
+  >(selected ?? null);
+
   const [isActive, setIsActive] = useState(false);
 
   function handleSelectCurrentOption(
@@ -27,7 +36,9 @@ export const AppDropDown = ({ options }: AppDropDownProps) => {
     setLabelSelected(reactNode);
     setIsActive(false);
 
-    // onChange(newValue); // Actualiza el valor en react-hook-form
+    if (onChange) {
+      onChange(e.currentTarget.value); // Update the value of react-hook-form
+    }
   }
 
   const AppDropDownRef = useRef<HTMLElement | null>(null);
@@ -62,6 +73,7 @@ export const AppDropDown = ({ options }: AppDropDownProps) => {
         className={twclass(
           "relative flex h-[40px] min-w-[255px] items-center justify-between rounded-md bg-white text-appGreyD ring-1 ring-appBorder",
           isActive && "shadow-app ring-appPurple",
+          error && "ring-appRed",
         )}
       >
         <button
@@ -69,17 +81,20 @@ export const AppDropDown = ({ options }: AppDropDownProps) => {
           type="button"
           className="h-full w-full"
         />
-        {/* This input is not visible */}
-        {/* <input
-          type="hidden"
-          value={optionValue}
-          onChange={(e) => {
-            setOptionValue(e.currentTarget.value);
-          }}
-        /> */}
         {/* Her is where the current option its showed */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-[12px] text-appGreyD">
-          <div>{labelSelected && labelSelected}</div>
+        <div
+          className={twclass(
+            "pointer-events-none absolute inset-0 flex items-center justify-between px-[12px] text-appGreyD",
+          )}
+        >
+          <div>
+            {labelSelected && <div>{labelSelected}</div>}
+
+            {!labelSelected && error && (
+              <span className="text-sm text-appRed"> {error} </span>
+            )}
+          </div>
+
           <div
             className={twclass(
               "h-fit w-fit text-appPurple transition-transform duration-[200ms] ease-custom-ease",
@@ -94,7 +109,7 @@ export const AppDropDown = ({ options }: AppDropDownProps) => {
         {areValidOptions && (
           <>
             {isActive && (
-              <div className="absolute left-0 top-[125%] flex h-fit w-full flex-col rounded-md bg-white text-appGreyD">
+              <div className="absolute left-0 top-[125%] z-[1000] flex h-fit w-full flex-col rounded-md bg-white text-appGreyD">
                 {options.map((op, index) =>
                   op.value === optionValue ? (
                     <OptionComponent
