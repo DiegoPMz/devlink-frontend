@@ -1,10 +1,8 @@
 // import { IllustrationEmpty } from "@/assets/IllustrationEmpty";
+import { IllustrationEmpty } from "@/assets/IllustrationEmpty";
 import { AppBar } from "@/components/AppBar";
 import { PreviewLinks } from "@/components/PreviewLinks";
 import { AppButton } from "@/components/ui/AppButton";
-import { AppTextField } from "@/components/ui/AppTextField";
-
-import { HiBars2 } from "react-icons/hi2";
 
 export const LinksPage = () => {
   return (
@@ -13,14 +11,16 @@ export const LinksPage = () => {
         <AppBar />
       </div>
 
-      <div className="relative w-full lg:flex lg:justify-center lg:gap-[24px]">
-        <section className="sticky top-[78px] z-30 hidden h-full w-fit rounded-xl bg-white px-[20px] py-[100px] lg:block xl:px-[140px]">
-          <PreviewLinks />
+      <div className="relative h-full w-full lg:flex lg:justify-center lg:gap-[24px]">
+        <section className="relative hidden min-h-full rounded-xl bg-white lg:flex lg:w-[50%] lg:justify-center lg:py-[40px] xl:py-[100px]">
+          <div className="sticky top-[170px] h-fit">
+            <PreviewLinks />
+          </div>
         </section>
-        <section className="h-fit w-full rounded-xl bg-white">
-          <div className="relative p-[24px] md:p-[40px]">
+        <section className="relative flex w-full flex-col rounded-xl bg-white">
+          <div className="h-full px-[24px] pb-[24px] md:px-[40px] md:pb-[40px]">
             {/* Introduction text "Customize your links" */}
-            <div className="sticky top-[-22px] flex flex-col bg-white pb-[24px] md:gap-[12px]">
+            <div className="sticky top-[60px] z-40 flex flex-col rounded-md bg-white pb-[24px] pt-[24px] md:gap-[12px] md:pt-[40px]">
               <h1 className="text-2xl font-bold text-appGreyD md:text-[32px]">
                 Customize your links
               </h1>
@@ -32,8 +32,8 @@ export const LinksPage = () => {
               <AppButton variant="secondary">+ Add new link </AppButton>
             </div>
             {/* Container of principal content */}
-            <div className="flex flex-col rounded-xl bg-red-400 px-[20px] py-[40px] md:gap-[40px] md:py-[100px]">
-              {/* <div>
+            <div className="flex flex-col rounded-xl bg-appGreyL px-[20px] py-[40px] md:gap-[40px] md:py-[100px]">
+              <div>
                 <div className="flex justify-center md:hidden">
                   <IllustrationEmpty mobile={true} />
                 </div>
@@ -46,34 +46,20 @@ export const LinksPage = () => {
                 <h2 className="text-2xl font-bold text-appGreyD md:text-center md:text-[32px]">
                   Let’s get you started
                 </h2>
-                <p className="w-fit bg-green-200 text-appGrey md:w-[488px] md:text-center">
+                <p className="w-fit text-appGrey md:w-[488px] md:text-center">
                   Use the “Add new link” button to get started. Once you have
                   more than one link, you can reorder and edit them. We’re here
                   to help you share your profiles with everyone!
                 </p>
-              </div> */}
-
-              <section>
-                <div className="flex justify-between text-appGrey">
-                  <div className="flex items-center gap-[8px] font-bold">
-                    <HiBars2 />
-                    <span>Link #1</span>
-                  </div>
-                  <span>remove</span>
-                </div>
-
-                <div>
-                  <div>
-                    <label htmlFor="">Platform</label>
-                    <AppTextField />
-                  </div>
-                  <div>
-                    <label htmlFor="">Link</label>
-                    <AppTextField />
-                  </div>
-                </div>
-              </section>
+              </div>
             </div>
+
+            {/* <section className="flex flex-col gap-[24px] bg-white">
+              <RegisterLinkComponent />
+              <RegisterLinkComponent />
+              <RegisterLinkComponent />
+              <RegisterLinkComponent />
+            </section> */}
           </div>
 
           {/* Bottom sticky button */}
