@@ -1,4 +1,3 @@
-// import { IllustrationEmpty } from "@/assets/IllustrationEmpty";
 import { IllustrationEmpty } from "@/assets/IllustrationEmpty";
 import { AppBar } from "@/components/AppBar";
 import { PreviewLinks } from "@/components/PreviewLinks";
