@@ -19,6 +19,7 @@ export default {
       },
       boxShadow: {
         app: " 0 2px 25px rgba(99,60,255,0.5)",
+        appError: " 0 2px 25px rgba(255, 57, 57,1)",
       },
       transitionTimingFunction: {
         "custom-ease": "cubic-bezier(0.25, 0.1, 0.25, 1)",

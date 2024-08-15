@@ -66,7 +66,7 @@ export const AppDropDown = ({
   const areValidOptions = options && options.length > 0;
 
   return (
-    <div className="w-[300px] p-10">
+    <div className="w-full">
       <section
         ref={AppDropDownRef}
         id="custom-drop"
@@ -74,6 +74,7 @@ export const AppDropDown = ({
           "relative flex h-[40px] min-w-[255px] items-center justify-between rounded-md bg-white text-appGreyD ring-1 ring-appBorder",
           isActive && "shadow-app ring-appPurple",
           error && "ring-appRed",
+          error && isActive && "shadow-appError",
         )}
       >
         <button
@@ -81,7 +82,7 @@ export const AppDropDown = ({
           type="button"
           className="h-full w-full"
         />
-        {/* Her is where the current option its showed */}
+        {/* Here is where the current option its showed */}
         <div
           className={twclass(
             "pointer-events-none absolute inset-0 flex items-center justify-between px-[12px] text-appGreyD",
@@ -99,6 +100,7 @@ export const AppDropDown = ({
             className={twclass(
               "h-fit w-fit text-appPurple transition-transform duration-[200ms] ease-custom-ease",
               isActive && "rotate-[180deg]",
+              error && "text-appRed",
             )}
           >
             <IoIosArrowUp />
@@ -109,7 +111,7 @@ export const AppDropDown = ({
         {areValidOptions && (
           <>
             {isActive && (
-              <div className="absolute left-0 top-[125%] z-[1000] flex h-fit w-full flex-col rounded-md bg-white text-appGreyD">
+              <div className="absolute left-0 top-[125%] z-[1000] flex h-fit max-h-[287px] w-full flex-col overflow-y-scroll rounded-md bg-white text-appGreyD">
                 {options.map((op, index) =>
                   op.value === optionValue ? (
                     <OptionComponent
