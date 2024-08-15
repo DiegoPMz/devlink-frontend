@@ -36,7 +36,7 @@ export const AppBar = () => {
 
         <div className="h-[42px] w-[52px] md:hidden">
           <AppButton variant="secondary">
-            <PiEyeBold className="h-[21px] w-[21px]" />
+            <PiEyeBold />
           </AppButton>
         </div>
 
