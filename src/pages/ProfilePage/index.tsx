@@ -1,6 +1,7 @@
 import { AppBar } from "@/components/AppBar";
 import { PreviewLinks } from "@/components/PreviewLinks";
 import { AppButton } from "@/components/ui/AppButton";
+import { AppInputPicture } from "@/components/ui/AppInputPicture";
 import { AppTextField } from "@/components/ui/AppTextField";
 
 export const ProfilePage = () => {
@@ -33,11 +34,7 @@ export const ProfilePage = () => {
                   Profile picture
                 </span>
                 <div className="flex flex-col gap-[24px] md:w-[60%] md:flex-row md:items-center">
-                  <figure className="flex aspect-square w-[193px] min-w-[193px] items-center justify-center rounded-lg bg-appPurpleL">
-                    <span className="font-semibold text-appPurple">
-                      +Upload Image
-                    </span>
-                  </figure>
+                  <AppInputPicture />
                   <span className="text-xs text-appGrey">
                     Image must be below 1024x1024px. Use PNG or JPG format.
                   </span>

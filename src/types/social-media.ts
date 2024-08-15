@@ -1,14 +1,15 @@
-// type GitHub = "github";
-// type FrontendMentor = "frontend mentor";
-// type Twitter = "twitter";
-// type LinkedIn = "linkedin";
-// type YouTube = "youtube";
-// type Facebook = "facebook";
-// type Twitch = "twitch";
-// type DevTo = "dev.to";
-// type Codewars = "codewars";
-// type Codepen = "codepen";
-// type freeCodeCamp = "free code camp";
-// type GitLab = "gitlab";
-// type Hashnode = "hashnode";
-// type StackOverflow = "stackoverflow";
+export type AvailableSocialMedia =
+  | "codewars"
+  | "codepen"
+  | "devto"
+  | "facebook"
+  | "freecodecamp"
+  | "frontendmentor"
+  | "gitlab"
+  | "github"
+  | "hashnode"
+  | "linkedin"
+  | "stackoverflow"
+  | "twitter"
+  | "twitch"
+  | "youtube";

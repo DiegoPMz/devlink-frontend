@@ -1,10 +1,6 @@
 import { twclass } from "@/utilities/twclass";
 import { NavLink, NavLinkProps } from "react-router-dom";
 
-// type NavLinkType = React.ForwardRefExoticComponent<
-//   NavLinkProps & React.RefAttributes<HTMLAnchorElement>
-// >;
-
 interface AppLinkTabProps extends NavLinkProps {
   children?: React.ReactNode;
 }
