@@ -1,3 +1,4 @@
+import { AvailableSocialMedia } from "@/types/social-media";
 import { BiLogoDevTo } from "react-icons/bi";
 import {
   FaFacebook,
@@ -15,10 +16,10 @@ import { StructureSocialMediaComponent } from "./StructureSocialMediaComponent";
 
 interface OptionType {
   label: React.ReactNode;
-  value: string;
+  value: AvailableSocialMedia;
 }
 
-export const socialMediaCollection: OptionType[] = [
+export const SocialMediaCollection: OptionType[] = [
   {
     label: (
       <StructureSocialMediaComponent>
