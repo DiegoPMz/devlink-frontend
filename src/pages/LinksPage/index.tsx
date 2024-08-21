@@ -1,9 +1,22 @@
-import { IllustrationEmpty } from "@/assets/IllustrationEmpty";
 import { AppBar } from "@/components/AppBar";
 import { PreviewLinks } from "@/components/PreviewLinks";
+import { SocialMediaCollection } from "@/components/Social-media-collection";
 import { AppButton } from "@/components/ui/AppButton";
+import { AppDropDown } from "@/components/ui/AppDropDown";
+import { AppTextField } from "@/components/ui/AppTextField";
+import { useStoreApp } from "@/store";
+import { AvailableSocialMedia } from "@/types/social-media";
+import { HiBars2 } from "react-icons/hi2";
+import { EmptyLinkContent } from "./components/EmptyLinkContent";
 
 export const LinksPage = () => {
+  const appUserLinks = useStoreApp((state) => state.userProfile.profile_links);
+  const handlerGenerateNewLink = useStoreApp((state) => state.generateNewLink);
+  const handlerChangeLinks = useStoreApp((state) => state.onChangeLinks);
+  const handlerRemoveLink = useStoreApp((state) => state.removeLink);
+
+  const isSubmissionAllowed = useStoreApp((state) => state.isSubmissionAllowed);
+
   return (
     <div className="relative bg-appGreyL px-[16px] md:p-[24px]">
       <div className="sticky top-0 z-50 pb-[16px] md:pb-[24px]">
@@ -28,47 +41,102 @@ export const LinksPage = () => {
                 with the world!
               </p>
 
-              <AppButton variant="secondary">+ Add new link </AppButton>
-            </div>
-            {/* Container of principal content */}
-            <div className="flex flex-col rounded-xl bg-appGreyL px-[20px] py-[40px] md:gap-[40px] md:py-[100px]">
-              <div>
-                <div className="flex justify-center md:hidden">
-                  <IllustrationEmpty mobile={true} />
-                </div>
-                <div className="hidden md:flex md:justify-center">
-                  <IllustrationEmpty />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-[24px] md:items-center">
-                <h2 className="text-2xl font-bold text-appGreyD md:text-center md:text-[32px]">
-                  Let’s get you started
-                </h2>
-                <p className="w-fit text-appGrey md:w-[488px] md:text-center">
-                  Use the “Add new link” button to get started. Once you have
-                  more than one link, you can reorder and edit them. We’re here
-                  to help you share your profiles with everyone!
-                </p>
-              </div>
+              <AppButton
+                type="button"
+                variant="secondary"
+                // onClick={handlerNewLink}
+                onClick={handlerGenerateNewLink}
+              >
+                + Add new link
+              </AppButton>
             </div>
 
-            {/* <section className="flex flex-col gap-[24px] bg-white">
-              <RegisterLinkComponent />
-              <RegisterLinkComponent />
-              <RegisterLinkComponent />
-              <RegisterLinkComponent />
-            </section> */}
+            {/* Content empty links */}
+            {appUserLinks.length === 0 && <EmptyLinkContent />}
+
+            {/* Generate inputs for register links */}
+            {appUserLinks.length >= 1 && (
+              <form
+                className="flex flex-col gap-[24px] bg-white"
+                id="linkPage-form-id"
+              >
+                {appUserLinks.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="flex flex-col gap-[12px] rounded-lg bg-appGreyL p-[20px]"
+                  >
+                    <article className="flex justify-between text-appGrey">
+                      <div className="flex items-center gap-[8px] font-bold">
+                        <HiBars2 />
+                        <span>Link #{index + 1} </span>
+                      </div>
+                      <button
+                        type="button"
+                        formNoValidate
+                        className="transition-colors duration-200 ease-out hover:text-appRed"
+                        onClick={() => handlerRemoveLink(field.id)}
+                      >
+                        Remove
+                      </button>
+                    </article>
+                    {/*  */}
+                    <article className="flex flex-col gap-[12px]">
+                      <div>
+                        <label className="text-xs text-appGreyD" htmlFor="">
+                          Platform
+                        </label>
+                        <AppDropDown
+                          options={SocialMediaCollection}
+                          onChange={(e) =>
+                            handlerChangeLinks(field.id, {
+                              ...field,
+                              social_media: e as AvailableSocialMedia | "",
+                            })
+                          }
+                          selected={field.social_media}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-appGreyD" htmlFor="">
+                          Link
+                        </label>
+                        <AppTextField
+                          onChange={(e) =>
+                            handlerChangeLinks(field.id, {
+                              ...field,
+                              url: e.target.value,
+                            })
+                          }
+                          value={field.url}
+                        />
+                      </div>
+                    </article>
+                  </div>
+                ))}
+              </form>
+            )}
           </div>
 
           {/* Bottom sticky button */}
           <div className="sticky bottom-0 w-full rounded-b-xl border-t-2 border-appBorder bg-white p-[16px] md:flex md:justify-end">
             <div className="md:hidden">
-              <AppButton>Save</AppButton>
+              <AppButton
+                form="linkPage-form-id"
+                type="submit"
+                disabled={isSubmissionAllowed() === false}
+              >
+                Save
+              </AppButton>
             </div>
 
             <div className="hidden w-[92px] md:block">
-              <AppButton>Save</AppButton>
+              <AppButton
+                form="linkPage-form-id"
+                type="submit"
+                disabled={isSubmissionAllowed() === false}
+              >
+                Save
+              </AppButton>
             </div>
           </div>
         </section>

@@ -3,8 +3,16 @@ import { PreviewLinks } from "@/components/PreviewLinks";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppInputPicture } from "@/components/ui/AppInputPicture";
 import { AppTextField } from "@/components/ui/AppTextField";
+import { useStoreApp } from "@/store";
 
 export const ProfilePage = () => {
+  const onChangeState = useStoreApp((state) => state.onChangeBasicDetails);
+  const appState = useStoreApp((state) => state.userProfile);
+  const isSubmissionAllowed = useStoreApp((state) => state.isSubmissionAllowed);
+
+  console.log(appState);
+  console.log(isSubmissionAllowed());
+
   return (
     <div className="bg-appGreyL md:flex md:h-[100dvh] md:flex-col lg:p-[24px]">
       <div className="sticky top-0 z-50 h-fit">
@@ -34,7 +42,12 @@ export const ProfilePage = () => {
                   Profile picture
                 </span>
                 <div className="flex flex-col gap-[24px] md:w-[60%] md:flex-row md:items-center">
-                  <AppInputPicture />
+                  <AppInputPicture
+                    currentFile={appState.profile_image}
+                    onchange={(value) =>
+                      onChangeState("profile_image", value as string)
+                    }
+                  />
                   <span className="text-xs text-appGrey">
                     Image must be below 1024x1024px. Use PNG or JPG format.
                   </span>
@@ -45,34 +58,64 @@ export const ProfilePage = () => {
                 <div className="md:flex md:items-center md:justify-between">
                   <label
                     className="text-xs text-appGrey md:text-base"
-                    htmlFor="First-Name"
+                    htmlFor="firstName"
                   >
                     First name*
                   </label>
                   <div className="w-full md:w-[60%]">
-                    <AppTextField />
+                    <AppTextField
+                      id="firstName"
+                      name="profile_name"
+                      value={appState.profile_name}
+                      onChange={(e) =>
+                        onChangeState(
+                          e.target.name as "profile_name",
+                          e.target.value,
+                        )
+                      }
+                    />
                   </div>
                 </div>
                 <div className="md:flex md:items-center md:justify-between">
                   <label
                     className="text-xs text-appGrey md:text-base"
-                    htmlFor="Last-name"
+                    htmlFor="lastName"
                   >
                     Last name*
                   </label>
                   <div className="w-full md:w-[60%]">
-                    <AppTextField />
+                    <AppTextField
+                      id="lastName"
+                      name="profile_last_name"
+                      value={appState.profile_last_name}
+                      onChange={(e) =>
+                        onChangeState(
+                          e.target.name as "profile_last_name",
+                          e.target.value,
+                        )
+                      }
+                    />
                   </div>
                 </div>
                 <div className="md:flex md:items-center md:justify-between">
                   <label
                     className="text-xs text-appGrey md:text-base"
-                    htmlFor="Email"
+                    htmlFor="email"
                   >
-                    Email
+                    Email*
                   </label>
                   <div className="w-full md:w-[60%]">
-                    <AppTextField />
+                    <AppTextField
+                      id="email"
+                      name="Profile_email"
+                      value={appState.Profile_email}
+                      onChange={(e) =>
+                        onChangeState(
+                          e.target.name as "Profile_email",
+                          e.target.value,
+                        )
+                      }
+                    />
                   </div>
                 </div>
               </div>
@@ -83,7 +126,9 @@ export const ProfilePage = () => {
           <div className="md:flex md:h-full md:items-end">
             <div className="xl: bottom-0 left-0 w-full border-t-2 border-appBorder p-[16px] md:flex md:justify-end md:p-[24px] md:pr-[40px]">
               <div className="w-full md:w-[91px] xl:h-fit">
-                <AppButton>Save</AppButton>
+                <AppButton disabled={isSubmissionAllowed() === false}>
+                  Save
+                </AppButton>
               </div>
             </div>
           </div>
