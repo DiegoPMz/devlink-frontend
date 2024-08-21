@@ -12,7 +12,6 @@ export interface ProfileLink {
   social_media: AvailableSocialMedia | "";
   url: string;
 }
-
 interface AppUserProfile {
   id: string;
   credentials: null | string;
@@ -24,34 +23,26 @@ interface AppUserProfile {
   profile_template: string;
 }
 
+interface AppErrorProfileItem {
+  status: boolean;
+  message: string;
+}
 interface AppErrorLink {
   id: string;
   message: string;
 }
-
 interface AppError {
-  Profile_email: {
-    status: boolean;
-    message: string;
-  };
-  profile_name: {
-    status: boolean;
-    message: string;
-  };
-  profile_last_name: {
-    status: boolean;
-    message: string;
-  };
-  profile_image: {
-    status: boolean;
-    message: string;
-  };
-
-  profile_links: {
-    status: boolean;
-    links: AppErrorLink[] | [];
-  };
+  Profile_email: AppErrorProfileItem;
+  profile_name: AppErrorProfileItem;
+  profile_last_name: AppErrorProfileItem;
+  profile_image: AppErrorProfileItem;
+  profile_links: AppErrorLink[] | [];
 }
+
+type OnChangeBDNameType = keyof Omit<
+  AppUserProfile,
+  "id" | "credentials" | "profile_template" | "profile_links"
+>;
 
 interface useStoreAppState {
   auth: AuthUserTypes;
@@ -63,6 +54,10 @@ interface useStoreAppState {
     id: ProfileLink["id"],
     value: Omit<ProfileLink, "id">,
   ) => void;
+
+  onChangeBasicDetails: (inputName: OnChangeBDNameType, value: string) => void;
+
+  isSubmissionAllowed: () => boolean;
 }
 
 export const useStoreApp = create<useStoreAppState>()((set, get) => ({
@@ -99,10 +94,8 @@ export const useStoreApp = create<useStoreAppState>()((set, get) => ({
       status: false,
       message: "",
     },
-    profile_links: {
-      status: false,
-      links: [],
-    },
+
+    profile_links: [],
   },
 
   generateNewLink: () => {
@@ -133,7 +126,7 @@ export const useStoreApp = create<useStoreAppState>()((set, get) => ({
     }));
   },
 
-  onChangeLinks: (id: ProfileLink["id"], value: Omit<ProfileLink, "id">) => {
+  onChangeLinks: (id, value) => {
     const userLinks = get().userProfile.profile_links;
     const currentLinkModified = userLinks.find((link) => link.id === id);
 
@@ -149,4 +142,82 @@ export const useStoreApp = create<useStoreAppState>()((set, get) => ({
       userProfile: { ...state.userProfile, profile_links: updateLink },
     }));
   },
+
+  onChangeBasicDetails: (inputName, value) => {
+    if (inputName === "profile_name") {
+      set((state) => ({
+        userProfile: { ...state.userProfile, profile_name: value },
+      }));
+      return;
+    }
+
+    if (inputName === "profile_last_name") {
+      set((state) => ({
+        userProfile: { ...state.userProfile, profile_last_name: value },
+      }));
+      return;
+    }
+
+    if (inputName === "Profile_email") {
+      set((state) => ({
+        userProfile: { ...state.userProfile, Profile_email: value },
+      }));
+      return;
+    }
+
+    if (inputName === "profile_image") {
+      set((state) => ({
+        userProfile: { ...state.userProfile, profile_image: value },
+      }));
+      return;
+    }
+  },
+
+  isSubmissionAllowed: () => {
+    const appUser = get().userProfile;
+    const isValidData =
+      !appUser.profile_name ||
+      !appUser.profile_last_name ||
+      !appUser.Profile_email ||
+      !appUser.profile_image;
+
+    if (isValidData || appUser.profile_links.length < 1) return false;
+
+    return true;
+  },
 }));
+
+// const appErrors = get().appError.profile_links.links;
+// const errorUrl = urlValidationService(
+//   currentLinkModified.social_media,
+//   value.url,
+// );
+
+// if (errorUrl.status) {
+//   const existError = appErrors.find((err) => err.id === id);
+
+//   const updateErrorsLinks: AppErrorLink[] = existError
+//     ? appErrors
+//     : [...appErrors, { id: id, message: errorUrl.message }];
+
+//   set((state) => ({
+//     appError: {
+//       ...state.appError,
+//       profile_links: {
+//         status: errorUrl.status,
+//         links: updateErrorsLinks,
+//       },
+//     },
+//   }));
+// } else {
+//   const removedError = appErrors.filter((err) => err.id !== id);
+//   set((state) => ({
+//     appError: {
+//       ...state.appError,
+//       profile_links: {
+//         status: false,
+//         links: removedError,
+//       },
+//     },
+//   }));
+// }
