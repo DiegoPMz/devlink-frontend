@@ -1,9 +1,11 @@
 import { LogoDevlinksLarge } from "@/assets/LogoDevlinksLarge";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppTextField } from "@/components/ui/AppTextField";
+import { useStoreApp } from "@/store";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { AiTwotoneMail } from "react-icons/ai";
 import { PiLockKeyFill } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 
 export interface LoginUserPage {
   email: string;
@@ -11,6 +13,9 @@ export interface LoginUserPage {
 }
 
 export const LoginPage = () => {
+  const storeLoginMethod = useStoreApp((state) => state.login);
+  const navigate = useNavigate();
+
   const {
     register,
     formState: { errors },
@@ -30,12 +35,15 @@ export const LoginPage = () => {
   }
 
   // pending
-  const onSubmit: SubmitHandler<LoginUserPage> = () => {
-    console.log("✅");
+  const onSubmit: SubmitHandler<LoginUserPage> = async (data) => {
+    if (Object.values(data).some((val) => !val)) return;
+
+    const isAuthenticated = await storeLoginMethod(data);
+    if (isAuthenticated) navigate("/links");
   };
 
   return (
-    <div className="lg:bg-appCustom h-[100dvh] bg-white p-[32px] md:flex md:flex-col md:items-center md:justify-center md:gap-[32px] md:bg-appGreyL">
+    <div className="md:bg-appCustom h-[100dvh] bg-white p-[32px] md:flex md:flex-col md:items-center md:justify-center md:gap-[32px] md:bg-appGreyL">
       <div>
         <LogoDevlinksLarge />
       </div>
@@ -68,7 +76,7 @@ export const LoginPage = () => {
                   message: "Invalid e-mail address",
                 },
               })}
-              error={errors.email?.message ?? undefined}
+              error={errors.email?.message}
             />
           </div>
 
@@ -87,7 +95,7 @@ export const LoginPage = () => {
                   message: "Can’t be empty",
                 },
               })}
-              error={errors.password?.message ?? undefined}
+              error={errors.password?.message}
             />
           </div>
 
