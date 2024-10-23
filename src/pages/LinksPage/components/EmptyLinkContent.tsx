@@ -2,7 +2,7 @@ import { IllustrationEmpty } from "@/assets/IllustrationEmpty";
 
 export const EmptyLinkContent = () => {
   return (
-    <div className="flex flex-col rounded-xl bg-appGreyL px-[20px] py-[40px] md:gap-[40px] md:py-[100px]">
+    <div className="flex flex-col rounded-xl bg-appGreyL px-[20px] py-[40px] md:gap-[40px] md:py-[60px]">
       <div>
         <div className="flex justify-center md:hidden">
           <IllustrationEmpty mobile={true} />
