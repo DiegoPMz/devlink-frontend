@@ -4,9 +4,9 @@ import {
   apiRefreshTokenService,
   apiRegisterService,
 } from "@/service/api-service";
-import { ApiLoginBody, ApiRegisterBody } from "@/types/api-request";
+import { ApiLoginBody, ApiRegisterBody } from "@/types/api-request-body";
 import { StateCreator } from "zustand";
-import { UserSliceProfile, UserSliceType } from "./userSlice";
+import { UserSliceType } from "./userSlice";
 
 interface AuthSliceMethods {
   login: (data: ApiLoginBody) => Promise<boolean>;
@@ -19,7 +19,7 @@ export interface AuthSliceType extends AuthSliceMethods {}
 
 type AuthSliceBuildType = StateCreator<
   AuthSliceType & UserSliceType,
-  [],
+  [["zustand/devtools", never]],
   [],
   AuthSliceType
 >;
@@ -38,7 +38,7 @@ export const authSlice: AuthSliceBuildType = (set) => ({
       user: {
         ...state.user,
         credentials: userDb.credentials,
-        profile_email: userDb.email,
+        profile_email: userDb.profile_email,
         profile_name: userDb.profile_name,
         profile_last_name: userDb.profile_last_name,
         profile_image: userDb.profile_image,
@@ -46,7 +46,6 @@ export const authSlice: AuthSliceBuildType = (set) => ({
         profile_template: userDb.profile_template,
       },
     }));
-
     return true;
   },
 
@@ -59,18 +58,18 @@ export const authSlice: AuthSliceBuildType = (set) => ({
     if (!response.data) return false;
 
     const newUser = response.data;
-    const newProfileState: UserSliceProfile = {
-      credentials: newUser.credentials,
-      profile_email: newUser.profile_email,
-      profile_name: newUser.profile_name,
-      profile_last_name: newUser.profile_last_name,
-      profile_image: newUser.profile_image,
-      profile_links: newUser.profile_links,
-      profile_template: newUser.profile_template,
-    };
-
-    set((state) => ({ user: { ...state.user, newProfileState } }));
-
+    set((state) => ({
+      user: {
+        ...state.user,
+        credentials: newUser.credentials,
+        profile_email: newUser.profile_email,
+        profile_name: newUser.profile_name,
+        profile_last_name: newUser.profile_last_name,
+        profile_image: newUser.profile_image,
+        profile_links: newUser.profile_links,
+        profile_template: newUser.profile_template,
+      },
+    }));
     return true;
   },
 
@@ -80,17 +79,19 @@ export const authSlice: AuthSliceBuildType = (set) => ({
     if (response.error.isError) return;
     if (!response.data) return;
 
-    const emptyProfileState: UserSliceProfile = {
-      credentials: null,
-      profile_email: "",
-      profile_image: { id: null, url: null },
-      profile_name: "",
-      profile_last_name: "",
-      profile_links: [],
-      profile_template: null,
-    };
-
-    set((state) => ({ user: { ...state.user, emptyProfileState } }));
+    set((state) => ({
+      user: {
+        ...state.user,
+        credentials: null,
+        profile_email: "",
+        profile_image: { id: null, url: null },
+        profile_name: "",
+        profile_last_name: "",
+        profile_links: [],
+        profile_template: null,
+        profile_file: null,
+      },
+    }));
   },
 
   refreshToken: async () => {
@@ -98,16 +99,18 @@ export const authSlice: AuthSliceBuildType = (set) => ({
     //pending
     if (!response.error.isError && response.data) return;
 
-    const emptyProfileState: UserSliceProfile = {
-      credentials: null,
-      profile_email: "",
-      profile_image: { id: null, url: null },
-      profile_name: "",
-      profile_last_name: "",
-      profile_links: [],
-      profile_template: null,
-    };
-
-    set((state) => ({ user: { ...state.user, emptyProfileState } }));
+    set((state) => ({
+      user: {
+        ...state.user,
+        credentials: null,
+        profile_email: "",
+        profile_image: { id: null, url: null },
+        profile_name: "",
+        profile_last_name: "",
+        profile_links: [],
+        profile_template: null,
+        profile_file: null,
+      },
+    }));
   },
 });
