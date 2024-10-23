@@ -13,7 +13,6 @@ export interface ApiRegisterBody {
 export interface ApiUpdateTemplateLink {
   platform: AvailableSocialMedia;
   url: string;
-  id: string;
 }
 export interface ApiUpdateTemplateImage {
   id: string;

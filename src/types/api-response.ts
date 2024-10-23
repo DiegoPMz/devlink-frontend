@@ -5,9 +5,9 @@ export interface ProfileImage {
   url: string | null;
 }
 export interface ProfileLinks {
-  platform: AvailableSocialMedia | null;
-  url: string | null;
-  id?: string;
+  platform: AvailableSocialMedia | string;
+  url: string;
+  id: string;
 }
 export interface ApisGeneralResponse {
   email: string;
@@ -36,11 +36,8 @@ export type ApiLogoutResponse = ApiSuccessResponse;
 type NonNullableProfileImage = {
   [K in keyof ProfileImage]: NonNullable<ProfileImage[K]>;
 };
-type NonNullableProfileLinks = {
-  [K in keyof ProfileLinks]: NonNullable<ProfileLinks[K]>;
-};
 export interface ApisGeneralResponseNoNulls
   extends Omit<ApisGeneralResponse, "profile_image" | "profile_links"> {
   profile_image: NonNullableProfileImage;
-  profile_links: Required<NonNullableProfileLinks>[];
+  profile_links: ProfileLinks[];
 }
