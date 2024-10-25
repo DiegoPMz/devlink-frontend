@@ -109,8 +109,8 @@ export const errorSlice: ErrorSliceBuildType = (set, get) => ({
       }));
     },
     getErrorLink: (id) => {
-      console.log(id);
-      return null;
+      const errLinks = get().appErrors.profile_links;
+      return errLinks.find((err) => err.stateId === id) ?? null;
     },
 
     validateProfile: (state, value) => {
