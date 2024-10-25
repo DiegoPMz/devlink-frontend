@@ -1,13 +1,19 @@
-import { profileLinkSchema } from "@/schemas/app-profile-schemas";
+import {
+  profileEmailSchema,
+  profileFileSchema,
+  profileLastNameSchema,
+  profileLinkSchema,
+  profileNameSchema,
+} from "@/schemas/app-profile-schemas";
 import { ProfileLinks } from "@/types/api-response";
 import schemaValidator from "@/utilities/schema-validator";
 import { StateCreator } from "zustand";
+import { UserSliceProfile } from "./userSlice";
 
 type ErrorLinkStructure = Record<keyof Omit<ProfileLinks, "id">, string | null>;
 interface ErrorProfileDetails {
   isErr: boolean;
-  message: string;
-  stateId: string | null;
+  message: string | null;
 }
 interface ErrorProfileLinks {
   isErr: boolean;
@@ -30,7 +36,7 @@ interface ErrorSliceMethods {
   getErrorLink: (id: ProfileLinks["id"]) => ErrorProfileLinks | null;
   validateProfile: <K extends GetErrorProfileKeys>(
     state: K,
-    value: ErrorSliceState[K],
+    value: NonNullable<UserSliceProfile[K]>,
   ) => void;
 }
 
@@ -44,18 +50,17 @@ type ErrorSliceBuildType = StateCreator<
   ErrorSliceType
 >;
 
-const DEFAULT_STATE = {
+const PROFILE_DEFAULT_STATE: ErrorProfileDetails = {
   isErr: false,
   message: "",
-  stateId: null,
 };
 
 export const errorSlice: ErrorSliceBuildType = (set, get) => ({
   appErrors: {
-    profile_email: DEFAULT_STATE,
-    profile_name: DEFAULT_STATE,
-    profile_last_name: DEFAULT_STATE,
-    profile_file: DEFAULT_STATE,
+    profile_email: PROFILE_DEFAULT_STATE,
+    profile_name: PROFILE_DEFAULT_STATE,
+    profile_last_name: PROFILE_DEFAULT_STATE,
+    profile_file: PROFILE_DEFAULT_STATE,
     profile_links: [],
 
     validateLink: (link) => {
@@ -114,7 +119,33 @@ export const errorSlice: ErrorSliceBuildType = (set, get) => ({
     },
 
     validateProfile: (state, value) => {
-      console.log(state, value);
+      const schema_dictionary = {
+        profile_email: () =>
+          schemaValidator(profileEmailSchema, value as string),
+        profile_name: () => schemaValidator(profileNameSchema, value as string),
+        profile_last_name: () =>
+          schemaValidator(profileLastNameSchema, value as string),
+        profile_file: () => schemaValidator(profileFileSchema, value as File),
+      };
+
+      const errState = state;
+      const { isError, schemaError } = schema_dictionary[errState]();
+
+      if (!isError) {
+        set((state) => ({
+          appErrors: { ...state.appErrors, [errState]: PROFILE_DEFAULT_STATE },
+        }));
+        return;
+      }
+
+      const newError: ErrorProfileDetails = {
+        isErr: true,
+        message: schemaError?._errors[0] ?? null,
+      };
+
+      set((state) => ({
+        appErrors: { ...state.appErrors, [errState]: newError },
+      }));
     },
   },
 });
