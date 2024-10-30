@@ -147,4 +147,4 @@ export const SocialMediaCollection: OptionType[] = [
     ),
     value: "youtube",
   },
-] as const;
+];
