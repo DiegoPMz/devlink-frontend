@@ -11,7 +11,7 @@ export const AppMainLayout = ({ children }: React.PropsWithChildren) => {
       <AppBar />
 
       <div className="relative flex h-full w-full overflow-y-hidden xl:gap-[24px]">
-        <section className="sticky left-0 top-0 hidden w-[60%] max-w-[560px] items-center justify-center rounded-lg bg-white xl:flex">
+        <section className="sticky left-0 top-0 hidden w-[60%] max-w-[560px] items-start justify-center rounded-lg bg-white pt-[40px] xl:flex">
           <PreviewLinks />
         </section>
 
