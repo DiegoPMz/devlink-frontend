@@ -3,7 +3,7 @@ import { LogoDevlinksSmall } from "@/assets/LogoDevlinksSmall";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { LuLink } from "react-icons/lu";
 import { PiEyeBold } from "react-icons/pi";
-import { AppButton } from "./ui/AppButton";
+import { AppLink } from "./ui/AppLink";
 import { AppLinkTab } from "./ui/AppLinkTab";
 
 export const AppBar = () => {
@@ -19,14 +19,14 @@ export const AppBar = () => {
         </div>
 
         <div className="flex">
-          <AppLinkTab to="/test">
+          <AppLinkTab to="/links">
             <div className="flex items-center justify-center gap-[8px]">
               <LuLink className="h-[18px] w-[18px]" />
 
               <span className="hidden md:block">Links</span>
             </div>
           </AppLinkTab>
-          <AppLinkTab to="/testing">
+          <AppLinkTab to="/profile">
             <div className="flex items-center justify-center gap-[8px]">
               <FaRegCircleUser className="h-[18px] w-[18px]" />
               <span className="hidden md:block">Profile Details</span>
@@ -35,13 +35,15 @@ export const AppBar = () => {
         </div>
 
         <div className="h-[42px] w-[52px] md:hidden">
-          <AppButton variant="secondary">
-            <PiEyeBold />
-          </AppButton>
+          <AppLink variant="secondary" to={"/preview"}>
+            <PiEyeBold className="min-w-min" />
+          </AppLink>
         </div>
 
         <div className="hidden w-[114px] md:block">
-          <AppButton variant="secondary"> Preview </AppButton>
+          <AppLink variant="secondary" to={"/preview"}>
+            Preview
+          </AppLink>
         </div>
       </nav>
     </header>
