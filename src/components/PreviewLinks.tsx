@@ -1,14 +1,12 @@
 import { IllustrationPhone } from "@/assets/IllustrationPhone";
+import useProfileUpdateAnimation from "@/hooks/useProfileUpdateAnimation";
 import { useStoreApp } from "@/store";
 import { ArrayAvailableSocialMedia } from "@/types/social-media";
 import { twclass } from "@/utilities/twclass";
-import { useEffect, useState } from "react";
 import { AppPublishLink } from "./AppPublishLink";
 import { AvatarImage } from "./AvatarImage";
 
 export const PreviewLinks = () => {
-  const [animation, setAnimation] = useState("");
-
   const {
     profile_name,
     profile_last_name,
@@ -18,23 +16,7 @@ export const PreviewLinks = () => {
     profile_file,
   } = useStoreApp((state) => state.user);
 
-  useEffect(() => {
-    setAnimation("");
-
-    const addAnimation = setTimeout(() => {
-      setAnimation("animate-pulse");
-    }, 50);
-
-    return () => clearTimeout(addAnimation);
-  }, [
-    profile_name,
-    profile_last_name,
-    profile_email,
-    profile_links,
-    profile_image,
-    profile_file,
-  ]);
-
+  const emptyAnimation = useProfileUpdateAnimation();
   const isValidName = profile_name && profile_last_name;
 
   return (
@@ -47,7 +29,7 @@ export const PreviewLinks = () => {
           <AvatarImage
             imageUrl={profile_image.url ?? undefined}
             imageFile={profile_file ?? undefined}
-            animation={animation}
+            animation={emptyAnimation}
           />
         </div>
 
@@ -60,7 +42,7 @@ export const PreviewLinks = () => {
             <span
               className={twclass(
                 "h-[16px] w-[160px] rounded-[12px] bg-appBorder",
-                animation,
+                emptyAnimation,
               )}
             />
           )}
@@ -73,7 +55,7 @@ export const PreviewLinks = () => {
             <span
               className={twclass(
                 "h-[8px] w-[72px] rounded-[12px] bg-appBorder",
-                animation,
+                emptyAnimation,
               )}
             />
           )}
@@ -92,7 +74,7 @@ export const PreviewLinks = () => {
                     key={link.id}
                     className={twclass(
                       "min-h-[45px] w-full rounded-lg bg-appBorder",
-                      animation,
+                      emptyAnimation,
                     )}
                   />
                 );
@@ -116,7 +98,7 @@ export const PreviewLinks = () => {
                   key={index}
                   className={twclass(
                     "min-h-[45px] w-full rounded-lg bg-appBorder",
-                    animation,
+                    emptyAnimation,
                   )}
                 />
               ))}
