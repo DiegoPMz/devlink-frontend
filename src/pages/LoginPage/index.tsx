@@ -1,45 +1,78 @@
 import { LogoDevlinksLarge } from "@/assets/LogoDevlinksLarge";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppTextField } from "@/components/ui/AppTextField";
-import { useStoreApp } from "@/store";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { authEmailSchema, createPasswordSchema } from "@/schemas/auth-schemas";
+import schemaValidator from "@/utilities/schema-validator";
+import { useState } from "react";
 import { AiTwotoneMail } from "react-icons/ai";
 import { PiLockKeyFill } from "react-icons/pi";
-import { useNavigate } from "react-router-dom";
 
-export interface LoginUserPage {
+export interface LoginState {
   email: string;
   password: string;
 }
+type LoginStateKeys = keyof LoginState;
+
+interface ErrorStructure {
+  err: boolean;
+  message: string | undefined;
+}
+type LoginErrorState = Record<LoginStateKeys, ErrorStructure>;
+
+const INITIAL_STATE: LoginState = {
+  email: "",
+  password: "",
+};
+const ERROR_STRUCTURE = {
+  err: false,
+  message: undefined,
+};
+const ERROR_INITIAL_STATE: LoginErrorState = {
+  email: ERROR_STRUCTURE,
+  password: ERROR_STRUCTURE,
+};
 
 export const LoginPage = () => {
-  const storeLoginMethod = useStoreApp((state) => state.login);
-  const navigate = useNavigate();
+  const [loginData, setLoginData] = useState<LoginState>(INITIAL_STATE);
+  const [error, setError] = useState<LoginErrorState>(ERROR_INITIAL_STATE);
 
-  const {
-    register,
-    formState: { errors },
-    watch,
-    handleSubmit,
-  } = useForm<LoginUserPage>({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  const captureErrors = (state: LoginStateKeys, value: string) => {
+    const schemaDictionary = {
+      email: authEmailSchema,
+      password: createPasswordSchema("password"),
+    };
 
-  function validateDisabledButton() {
-    const inputs = watch();
-    const areEmptyInputs = !inputs.email || !inputs.password;
-    return areEmptyInputs;
-  }
+    const pickSchema = schemaDictionary[state];
+    const { isError, schemaError } = schemaValidator(pickSchema, value);
 
-  // pending
-  const onSubmit: SubmitHandler<LoginUserPage> = async (data) => {
-    if (Object.values(data).some((val) => !val)) return;
+    if (isError) {
+      const newError: ErrorStructure = {
+        err: true,
+        message: schemaError?._errors[0],
+      };
 
-    const isAuthenticated = await storeLoginMethod(data);
-    if (isAuthenticated) navigate("/links");
+      setError({
+        ...error,
+        [state]: newError,
+      });
+      return;
+    }
+
+    setError({ ...error, [state]: ERROR_STRUCTURE });
+  };
+
+  const handleChange = (
+    stateName: LoginStateKeys,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const inputValue = e.target.value;
+
+    setLoginData({
+      ...loginData,
+      [stateName]: inputValue,
+    });
+
+    captureErrors(stateName, inputValue);
   };
 
   return (
@@ -54,29 +87,18 @@ export const LoginPage = () => {
             Add your details below to get back into the app
           </p>
         </div>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col gap-[24px]"
-        >
+        <form className="flex flex-col gap-[24px]">
           <div>
             <label className="text-xs text-appGreyD" htmlFor="Email address">
               Email address
             </label>
             <AppTextField
-              id="Email address"
+              name="email"
+              value={loginData.email}
+              onChange={(e) => handleChange("email", e)}
               placeholder="e.g. alex@email.com"
               icon={<AiTwotoneMail />}
-              {...register("email", {
-                required: {
-                  value: true,
-                  message: "Can’t be empty",
-                },
-                pattern: {
-                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
-                  message: "Invalid e-mail address",
-                },
-              })}
-              error={errors.email?.message}
+              error={error.email.message}
             />
           </div>
 
@@ -86,20 +108,15 @@ export const LoginPage = () => {
             </label>
             <AppTextField
               type="password"
-              id="Password"
+              value={loginData.password}
+              onChange={(e) => handleChange("password", e)}
               placeholder="Enter your password"
               icon={<PiLockKeyFill />}
-              {...register("password", {
-                required: {
-                  value: true,
-                  message: "Can’t be empty",
-                },
-              })}
-              error={errors.password?.message}
+              error={error.password.message}
             />
           </div>
 
-          <AppButton type="submit" disabled={validateDisabledButton()}>
+          <AppButton type="submit" disabled={true}>
             Login
           </AppButton>
 
