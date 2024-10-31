@@ -1,6 +1,7 @@
 import { SocialMediaCollection } from "@/components/SocialMediaCollection";
 import { AppDropDown } from "@/components/ui/AppDropDown";
 import { AppTextField } from "@/components/ui/AppTextField";
+import { useStoreApp } from "@/store";
 import { UserSliceType } from "@/store/userSlice";
 import { ProfileLinks } from "@/types/api-response";
 import { AvailableSocialMedia } from "@/types/social-media";
@@ -19,6 +20,8 @@ export const SocialLinkItem = ({
   removeLink,
   onChangeLink,
 }: SocialLinkItemProps) => {
+  const { getErrorLink } = useStoreApp((state) => state.appErrors);
+
   return (
     <div className="flex flex-col gap-[12px] rounded-lg bg-appGreyL p-[20px]">
       <article className="flex justify-between text-appGrey">
@@ -64,6 +67,7 @@ export const SocialLinkItem = ({
               })
             }
             value={link.url}
+            error={getErrorLink(link.id)?.message.url ?? undefined}
           />
         </div>
       </article>
