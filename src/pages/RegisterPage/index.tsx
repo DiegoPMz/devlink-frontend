@@ -1,46 +1,123 @@
 import { LogoDevlinksLarge } from "@/assets/LogoDevlinksLarge";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppTextField } from "@/components/ui/AppTextField";
-import { SubmitHandler, useForm } from "react-hook-form";
+import {
+  authEmailSchema,
+  registerConfirmPassword,
+  registerPasswordSchema,
+} from "@/schemas/auth-schemas";
+import { useStoreApp } from "@/store";
+import { ApiRegisterBody } from "@/types/api-request-body";
+import schemaValidator from "@/utilities/schema-validator";
+import { useState } from "react";
 import { AiTwotoneMail } from "react-icons/ai";
 import { PiLockKeyFill } from "react-icons/pi";
-import {
-  inputUserConfirmPasswordValidations,
-  inputUserEmailValidations,
-  inputUserPasswordValidations,
-} from "./validations/react-hook-validations";
+import { useNavigate } from "react-router-dom";
 
-export interface RegisterUserPage {
-  email: string;
-  password: string;
-  confirmPassword: string;
+type ApiRegisterBodyKeys = keyof ApiRegisterBody;
+
+interface ErrorStructure {
+  err: boolean;
+  message: string | undefined;
 }
+type LoginErrorState = Record<ApiRegisterBodyKeys, ErrorStructure>;
+
+const INITIAL_STATE: ApiRegisterBody = {
+  email: "",
+  password: "",
+  confirm_password: "",
+};
+
+const ERROR_STRUCTURE = {
+  err: false,
+  message: undefined,
+};
+
+const ERROR_INITIAL_STATE: LoginErrorState = {
+  email: ERROR_STRUCTURE,
+  password: ERROR_STRUCTURE,
+  confirm_password: ERROR_STRUCTURE,
+};
 
 export const RegisterPage = () => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-    watch,
-  } = useForm<RegisterUserPage>({
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
+  const [registerData, setRegisterData] =
+    useState<ApiRegisterBody>(INITIAL_STATE);
+  const [error, setError] = useState<LoginErrorState>(ERROR_INITIAL_STATE);
 
-  function validateDisabledButton() {
-    const inputs = watch();
-    const areEmptyInputs =
-      !inputs.email || !inputs.password || !inputs.confirmPassword;
+  const storeSignupMethod = useStoreApp((state) => state.signup);
+  const navigate = useNavigate();
 
-    return areEmptyInputs;
-  }
+  const captureErrors = (state: ApiRegisterBodyKeys, value: string) => {
+    if (state !== "confirm_password") {
+      const schemaDictionary = {
+        email: authEmailSchema,
+        password: registerPasswordSchema,
+      };
 
-  // pending
-  const onSubmit: SubmitHandler<RegisterUserPage> = () => {
-    console.log("✅");
+      const pickSchema = schemaDictionary[state];
+      const { isError, schemaError } = schemaValidator(pickSchema, value);
+
+      const newError: ErrorStructure = {
+        err: true,
+        message: schemaError?._errors[0],
+      };
+
+      isError
+        ? setError({
+            ...error,
+            [state]: newError,
+          })
+        : setError({ ...error, [state]: ERROR_STRUCTURE });
+    }
+
+    if (state === "confirm_password" && registerData.password.length > 0) {
+      const { isError, schemaError } = schemaValidator(
+        registerConfirmPassword(registerData.password),
+        value,
+      );
+
+      const newError: ErrorStructure = {
+        err: true,
+        message: schemaError?._errors[0],
+      };
+
+      isError
+        ? setError({
+            ...error,
+            [state]: newError,
+          })
+        : setError({ ...error, [state]: ERROR_STRUCTURE });
+    }
+  };
+
+  const handleChange = (
+    stateName: ApiRegisterBodyKeys,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const inputValue = e.target.value;
+
+    setRegisterData({
+      ...registerData,
+      [stateName]: inputValue,
+    });
+
+    captureErrors(stateName, inputValue);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const { email, password, confirm_password } = error;
+    if (email.err || password.err || confirm_password.err) return;
+
+    const isRegistered = await storeSignupMethod(registerData);
+    if (isRegistered) navigate("/links");
+  };
+
+  const validateDisabledButton = () => {
+    const emptyState = Object.values(registerData).some((val) => !val);
+    const someError = Object.values(error).some((state) => state.err === true);
+    return emptyState || someError;
   };
 
   return (
@@ -55,20 +132,17 @@ export const RegisterPage = () => {
             Let’s get you started sharing your links!
           </p>
         </div>
-        <form
-          className="flex flex-col gap-[24px]"
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <form className="flex flex-col gap-[24px]" onSubmit={handleSubmit}>
           <div>
             <label className="text-xs text-appGreyD" htmlFor="Email address">
               Email address
             </label>
             <AppTextField
-              id="Email address"
               placeholder="e.g. alex@email.com"
+              value={registerData.email}
+              onChange={(e) => handleChange("email", e)}
               icon={<AiTwotoneMail />}
-              {...register("email", inputUserEmailValidations())}
-              error={errors.email?.message ?? undefined}
+              error={error.email.message}
             />
           </div>
 
@@ -78,11 +152,11 @@ export const RegisterPage = () => {
             </label>
             <AppTextField
               type="password"
-              id="Create password"
               placeholder="At least .8 characters"
+              value={registerData.password}
+              onChange={(e) => handleChange("password", e)}
               icon={<PiLockKeyFill />}
-              {...register("password", inputUserPasswordValidations())}
-              error={errors.password?.message ?? undefined}
+              error={error.password.message}
             />
           </div>
 
@@ -92,14 +166,11 @@ export const RegisterPage = () => {
             </label>
             <AppTextField
               type="password"
-              id="confirm password"
               placeholder="At least .8 characters"
+              value={registerData.confirm_password}
+              onChange={(e) => handleChange("confirm_password", e)}
               icon={<PiLockKeyFill />}
-              {...register(
-                "confirmPassword",
-                inputUserConfirmPasswordValidations(watch),
-              )}
-              error={errors.confirmPassword?.message ?? undefined}
+              error={error.confirm_password.message}
             />
           </div>
 
