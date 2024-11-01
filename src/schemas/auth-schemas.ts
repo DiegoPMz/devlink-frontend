@@ -17,13 +17,17 @@ export const loginSchema = z.object({
   password: createPasswordSchema("password"),
 });
 
-export const registerSchema = z
-  .object({
-    email: authEmailSchema,
-    password: createPasswordSchema("password"),
-    confirmPassword: createPasswordSchema("confirmPassword"),
-  })
-  .refine((state) => state.password === state.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+export const registerPasswordSchema = z
+  .string({ message: "Password is required" })
+  .trim()
+  .min(8, { message: "Minimum 8 characters" });
+
+export const registerConfirmPassword = (password: string) => {
+  return z
+    .string({ message: "This field is required" })
+    .min(1, { message: "This field cannot be empty" })
+    .trim()
+    .refine((state) => state === password, {
+      message: "Passwords must match",
+    });
+};
