@@ -2,10 +2,12 @@ import { LogoDevlinksLarge } from "@/assets/LogoDevlinksLarge";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppTextField } from "@/components/ui/AppTextField";
 import { authEmailSchema, createPasswordSchema } from "@/schemas/auth-schemas";
+import { useStoreApp } from "@/store";
 import schemaValidator from "@/utilities/schema-validator";
 import { useState } from "react";
 import { AiTwotoneMail } from "react-icons/ai";
 import { PiLockKeyFill } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
 
 export interface LoginState {
   email: string;
@@ -35,6 +37,9 @@ const ERROR_INITIAL_STATE: LoginErrorState = {
 export const LoginPage = () => {
   const [loginData, setLoginData] = useState<LoginState>(INITIAL_STATE);
   const [error, setError] = useState<LoginErrorState>(ERROR_INITIAL_STATE);
+
+  const storeLoginMethod = useStoreApp((state) => state.login);
+  const navigate = useNavigate();
 
   const captureErrors = (state: LoginStateKeys, value: string) => {
     const schemaDictionary = {
@@ -75,6 +80,20 @@ export const LoginPage = () => {
     captureErrors(stateName, inputValue);
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const { email, password } = error;
+    if (email.err || password.err) return;
+
+    const isAuthenticated = await storeLoginMethod(loginData);
+    if (isAuthenticated) navigate("/links");
+  };
+
+  const validateDisabledButton = Object.values(loginData).some(
+    (state) => !state,
+  );
+
   return (
     <div className="md:bg-appCustom h-[100dvh] bg-white p-[32px] md:flex md:flex-col md:items-center md:justify-center md:gap-[32px] md:bg-appGreyL">
       <div>
@@ -87,7 +106,7 @@ export const LoginPage = () => {
             Add your details below to get back into the app
           </p>
         </div>
-        <form className="flex flex-col gap-[24px]">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-[24px]">
           <div>
             <label className="text-xs text-appGreyD" htmlFor="Email address">
               Email address
@@ -116,7 +135,7 @@ export const LoginPage = () => {
             />
           </div>
 
-          <AppButton type="submit" disabled={true}>
+          <AppButton type="submit" disabled={validateDisabledButton}>
             Login
           </AppButton>
 
