@@ -10,21 +10,22 @@ export interface ProfileLinks {
   id: string;
 }
 export interface ApisGeneralResponse {
-  email: string;
+  id: string;
   credentials: string;
+  email: string;
   profile_email: string;
   profile_name: string;
   profile_last_name: string;
   profile_image: ProfileImage;
   profile_links: ProfileLinks[] | [];
   profile_template: string | null;
-  updatedAt: string;
 }
 
-export interface ApiRegisterResponse
-  extends Omit<ApisGeneralResponse, "updatedAt"> {
+interface ApiCreatedAtResponse extends ApisGeneralResponse {
   createdAt: string;
 }
+export type ApiLoginResponse = ApiCreatedAtResponse;
+export type ApiRegisterResponse = ApiCreatedAtResponse;
 
 interface ApiSuccessResponse {
   success: boolean;
@@ -41,3 +42,12 @@ export interface ApisGeneralResponseNoNulls
   profile_image: NonNullableProfileImage;
   profile_links: ProfileLinks[];
 }
+
+export interface ApiUpdateTemplateResponse extends ApisGeneralResponseNoNulls {
+  updatedAt: string;
+}
+export type ApiGetTemplateResponse = Omit<
+  ApisGeneralResponseNoNulls,
+  "id" | "credentials" | "email"
+>;
+export type ApiSecureTemplateResponse = ApiCreatedAtResponse;
