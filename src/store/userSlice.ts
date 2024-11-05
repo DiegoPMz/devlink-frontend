@@ -1,5 +1,6 @@
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
 import { StateCreator } from "zustand";
+import { ErrorSliceType } from "./errorSlice";
 
 export interface UserSliceProfile {
   credentials: string | null;
@@ -37,7 +38,7 @@ export interface UserSliceType {
 }
 
 type UserSliceBuildType = StateCreator<
-  UserSliceType,
+  UserSliceType & ErrorSliceType,
   [["zustand/devtools", never]],
   [],
   UserSliceType
@@ -97,12 +98,20 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       set((state) => ({
         user: { ...state.user, profile_links: updateLink },
       }));
+
+      get().appErrors.validateLink({
+        id,
+        platform: value.platform,
+        url: value.url,
+      });
     },
 
     onChangeDetails: (inputName, value) => {
       set((state) => ({
         user: { ...state.user, [inputName]: value },
       }));
+
+      get().appErrors.validateProfile(inputName, value);
     },
 
     isSubmissionAllowed: () => {
