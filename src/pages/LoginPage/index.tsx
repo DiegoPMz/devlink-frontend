@@ -7,7 +7,7 @@ import schemaValidator from "@/utilities/schema-validator";
 import { useState } from "react";
 import { AiTwotoneMail } from "react-icons/ai";
 import { PiLockKeyFill } from "react-icons/pi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export interface LoginState {
   email: string;
@@ -140,12 +140,10 @@ export const LoginPage = () => {
           </AppButton>
 
           <div className="flex flex-col items-center md:flex-row md:justify-center">
-            <a className="text-appGrey" href="#">
-              Don’t have an account?
-            </a>
-            <a className="text-appPurple" href="#">
+            <span className="text-appGrey">Don’t have an account?</span>
+            <Link className="text-appPurple" to={"/signup"}>
               Create account
-            </a>
+            </Link>
           </div>
         </form>
       </div>
