@@ -37,6 +37,7 @@ export const authSlice: AuthSliceBuildType = (set) => ({
     set((state) => ({
       user: {
         ...state.user,
+        id: userDb.id,
         credentials: userDb.credentials,
         profile_email: userDb.profile_email,
         profile_name: userDb.profile_name,
@@ -61,6 +62,7 @@ export const authSlice: AuthSliceBuildType = (set) => ({
     set((state) => ({
       user: {
         ...state.user,
+        id: newUser.id,
         credentials: newUser.credentials,
         profile_email: newUser.profile_email,
         profile_name: newUser.profile_name,

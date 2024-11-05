@@ -1,8 +1,11 @@
+import { apiTemplateDetailsService } from "@/service/api-service";
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
 import { StateCreator } from "zustand";
+import { AuthSliceType } from "./AuthSlice";
 import { ErrorSliceType } from "./errorSlice";
 
 export interface UserSliceProfile {
+  id: string | null;
   credentials: string | null;
   profile_email: string;
   profile_name: string;
@@ -32,13 +35,14 @@ interface UserSliceMethods {
     value: ProfileStateSomeValues,
   ) => void;
   isSubmissionAllowed: () => boolean;
+  getTemplateDetails: () => void;
 }
 export interface UserSliceType {
   user: UserSliceProfile & UserSliceMethods;
 }
 
 type UserSliceBuildType = StateCreator<
-  UserSliceType & ErrorSliceType,
+  UserSliceType & ErrorSliceType & AuthSliceType,
   [["zustand/devtools", never]],
   [],
   UserSliceType
@@ -46,6 +50,7 @@ type UserSliceBuildType = StateCreator<
 
 export const userSlice: UserSliceBuildType = (set, get) => ({
   user: {
+    id: null,
     credentials: null,
     profile_email: "",
     profile_name: "",
@@ -137,6 +142,37 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       if (invalidProfileDetails || notUserImageStates || invalidUserLinks)
         return false;
       return true;
+    },
+
+    getTemplateDetails: async () => {
+      const res = await apiTemplateDetailsService();
+
+      if (res.error.isError) {
+        if (res.error.status === 403) {
+          get().refreshToken();
+          get().user.getTemplateDetails();
+        }
+        return;
+      }
+
+      if (!res.data) return;
+
+      const data = res.data;
+      const newState: UserSliceProfile = {
+        id: data.id,
+        credentials: data.credentials,
+        profile_email: data.profile_email,
+        profile_name: data.profile_name,
+        profile_last_name: data.profile_last_name,
+        profile_image: data.profile_image,
+        profile_links: data.profile_links,
+        profile_template: data.profile_template,
+        profile_file: null,
+      };
+
+      set((state) => ({
+        user: { ...state.user, newState },
+      }));
     },
   },
 });

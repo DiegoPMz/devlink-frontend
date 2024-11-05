@@ -50,4 +50,4 @@ export type ApiGetTemplateResponse = Omit<
   ApisGeneralResponseNoNulls,
   "id" | "credentials" | "email"
 >;
-export type ApiSecureTemplateResponse = ApiCreatedAtResponse;
+export type ApiTemplateDetailsResponse = ApiCreatedAtResponse;
