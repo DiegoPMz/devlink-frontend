@@ -1,0 +1,26 @@
+# Ignorar node_modules y archivos de dependencias
+node_modules/
+package-lock.json
+yarn.lock
+
+# Ignorar compilados y artefactos de construcción
+dist/
+build/
+coverage/
+out/
+
+# Ignorar archivos de configuración y JSON
+*.config.js
+*.config.cjs
+*.config.mjs
+*.config.ts
+*.json
+
+# Ignorar archivos de tipado
+*.d.ts
+
+# Ignorar otros archivos opcionales
+.env
+.env.local
+*.snap
+*.log
