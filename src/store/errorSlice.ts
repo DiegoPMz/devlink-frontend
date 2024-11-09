@@ -38,6 +38,7 @@ interface ErrorSliceMethods {
     state: K,
     value: NonNullable<UserSliceProfile[K]>,
   ) => void;
+  areErrors: () => boolean;
 }
 
 export interface ErrorSliceType {
@@ -146,6 +147,27 @@ export const errorSlice: ErrorSliceBuildType = (set, get) => ({
       set((state) => ({
         appErrors: { ...state.appErrors, [errState]: newError },
       }));
+    },
+    areErrors: () => {
+      const {
+        profile_name,
+        profile_last_name,
+        profile_email,
+        profile_file,
+        profile_links,
+      } = get().appErrors;
+
+      const obj = [
+        profile_name,
+        profile_last_name,
+        profile_email,
+        profile_file,
+      ];
+
+      const findTemplateError = obj.some((err) => err.isErr);
+      const findLinkError = profile_links.some((link) => link.isErr);
+
+      return findTemplateError || findLinkError;
     },
   },
 });

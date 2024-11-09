@@ -129,19 +129,28 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         profile_links,
       } = get().user;
 
-      const invalidProfileDetails =
+      const hasInvalidProfileDetails =
         !profile_name || !profile_last_name || !profile_email;
 
-      const notUserImageStates =
+      const isMissingUserImage =
         Object.values(profile_image).some((i) => !i) && !profile_file;
 
-      const invalidUserLinks =
+      const hasInvalidUserLinks =
         profile_links.length === 0 ||
-        profile_links.some((li) => !li.platform || !li.url);
+        profile_links.some((link) => !link.platform || !link.url);
 
-      if (invalidProfileDetails || notUserImageStates || invalidUserLinks)
-        return false;
-      return true;
+      const hasAppErrors = get().appErrors.areErrors();
+      console.log(hasAppErrors);
+
+      if (
+        !hasInvalidProfileDetails &&
+        !isMissingUserImage &&
+        !hasInvalidUserLinks &&
+        !hasAppErrors
+      )
+        return true;
+
+      return false;
     },
 
     getTemplateDetails: async () => {
