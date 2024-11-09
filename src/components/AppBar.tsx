@@ -1,8 +1,7 @@
 import { LogoDevlinksLarge } from "@/assets/LogoDevlinksLarge";
 import { LogoDevlinksSmall } from "@/assets/LogoDevlinksSmall";
-import { FaRegCircleUser } from "react-icons/fa6";
+import { FaBars, FaRegCircleUser } from "react-icons/fa6";
 import { LuLink } from "react-icons/lu";
-import { PiEyeBold } from "react-icons/pi";
 import { AppLink } from "./ui/AppLink";
 import { AppLinkTab } from "./ui/AppLinkTab";
 
@@ -34,16 +33,16 @@ export const AppBar = () => {
           </AppLinkTab>
         </div>
 
-        <div className="h-[42px] w-[52px] md:hidden">
-          <AppLink variant="secondary" to={"/preview"}>
-            <PiEyeBold className="min-w-min" />
-          </AppLink>
-        </div>
+        <div className="gap-[12px] md:flex md:items-center">
+          <div className="hidden w-[114px] md:block">
+            <AppLink variant="secondary" to={"/preview"}>
+              Preview
+            </AppLink>
+          </div>
 
-        <div className="hidden w-[114px] md:block">
-          <AppLink variant="secondary" to={"/preview"}>
-            Preview
-          </AppLink>
+          <button className="flex items-center justify-center p-[4px] text-appPurple md:p-[8px]">
+            <FaBars className="h-[20px] w-[20px]" />
+          </button>
         </div>
       </nav>
     </header>
