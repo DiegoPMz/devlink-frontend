@@ -1,4 +1,4 @@
-import { apiTemplateDetailsService } from "@/service/api-service";
+import { getUserDetails } from "@/service/localStorage-user";
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
 import { StateCreator } from "zustand";
 import { AuthSliceType } from "./AuthSlice";
@@ -35,7 +35,6 @@ interface UserSliceMethods {
     value: ProfileStateSomeValues,
   ) => void;
   isSubmissionAllowed: () => boolean;
-  getTemplateDetails: () => void;
 }
 export interface UserSliceType {
   user: UserSliceProfile & UserSliceMethods;
@@ -140,48 +139,13 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         profile_links.some((link) => !link.platform || !link.url);
 
       const hasAppErrors = get().appErrors.areErrors();
-      console.log(hasAppErrors);
 
-      if (
+      return (
         !hasInvalidProfileDetails &&
         !isMissingUserImage &&
         !hasInvalidUserLinks &&
         !hasAppErrors
-      )
-        return true;
-
-      return false;
-    },
-
-    getTemplateDetails: async () => {
-      const res = await apiTemplateDetailsService();
-
-      if (res.error.isError) {
-        if (res.error.status === 403) {
-          get().refreshToken();
-          get().user.getTemplateDetails();
-        }
-        return;
-      }
-
-      if (!res.data) return;
-
-      const data = res.data;
-      const newState: UserSliceProfile = {
-        id: data.id,
-        credentials: data.credentials,
-        profile_email: data.profile_email,
-        profile_name: data.profile_name,
-        profile_last_name: data.profile_last_name,
-        profile_image: data.profile_image,
-        profile_links: data.profile_links,
-        profile_template: data.profile_template,
-        profile_file: null,
-      };
-
-      set((state) => ({
-        user: { ...state.user, newState },
-      }));
+      );
     },
   },
 });
