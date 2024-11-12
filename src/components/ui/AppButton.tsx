@@ -21,6 +21,7 @@ export const AppButton = ({
     <>
       <button
         {...props}
+        type={props.type ?? "button"}
         className={twclass(
           "flex h-full w-full items-center justify-center rounded-lg bg-appPurple py-[8px] text-white transition-colors duration-200 ease-out active:bg-appPurpleH disabled:pointer-events-none disabled:bg-appPurpleH",
           variant === "secondary" &&
