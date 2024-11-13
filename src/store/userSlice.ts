@@ -1,4 +1,4 @@
-import { getUserDetails } from "@/service/localStorage-user";
+import { getPersistedState } from "@/service/persist-user";
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
 import { StateCreator } from "zustand";
 import { AuthSliceType } from "./AuthSlice";
@@ -49,16 +49,8 @@ type UserSliceBuildType = StateCreator<
 
 export const userSlice: UserSliceBuildType = (set, get) => ({
   user: {
-    id: null,
-    credentials: null,
-    profile_email: "",
-    profile_name: "",
-    profile_last_name: "",
-    profile_image: { id: null, url: null },
-    profile_links: [],
-    profile_template: null,
+    ...getPersistedState(),
     profile_file: null,
-
     generateLink: () => {
       const UUID = crypto.randomUUID();
       const newLink: ProfileLinks = {
