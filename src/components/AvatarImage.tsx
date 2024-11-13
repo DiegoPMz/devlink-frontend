@@ -18,6 +18,7 @@ export const AvatarImage = ({
       <span
         className={twclass(
           "aspect-square w-[96px] rounded-full bg-appBorder",
+          size === "lg" && "w-[108px]",
           animation ?? "",
         )}
       />
@@ -25,7 +26,12 @@ export const AvatarImage = ({
   }
 
   return (
-    <div className="aspect-square w-[96px] rounded-full bg-appPurple p-[4px]">
+    <div
+      className={twclass(
+        "aspect-square w-[96px] rounded-full bg-appPurple p-[4px]",
+        size === "lg" && "w-[108px]",
+      )}
+    >
       <img
         className="aspect-square w-full rounded-full object-cover"
         src={imageUrl ?? URL.createObjectURL(imageFile as File)}
