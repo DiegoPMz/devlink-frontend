@@ -10,7 +10,16 @@ export const ProfilePage = () => {
     profile_email,
     profile_image,
     onChangeDetails,
+    profile_file,
   } = useStoreApp((state) => state.user);
+
+  const error = useStoreApp((state) => state.appErrors);
+
+  const currentImage = () => {
+    if (profile_image.url) return profile_image.url;
+    if (profile_file) return URL.createObjectURL(profile_file);
+    return undefined;
+  };
 
   return (
     <AppMainLayout>
@@ -28,10 +37,10 @@ export const ProfilePage = () => {
             <span className="text-appGrey md:min-w-fit">Profile picture</span>
             <div className="flex flex-col gap-[24px] md:w-[60%] md:flex-row md:items-center">
               <AppInputPicture
-                onchange={(value) =>
-                  onChangeDetails("profile_file", value as File)
+                onChange={(inputValue) =>
+                  onChangeDetails("profile_file", inputValue)
                 }
-                currentFile={profile_image.url ?? undefined}
+                addImage={currentImage()}
               />
               <span className="text-xs text-appGrey">
                 Image must be below 1024x1024px. Use PNG or JPG format.
@@ -49,12 +58,11 @@ export const ProfilePage = () => {
               </label>
               <div className="w-full md:w-[60%]">
                 <AppTextField
-                  id="firstName"
-                  name="profile_name"
                   value={profile_name}
                   onChange={(e) =>
                     onChangeDetails("profile_name", e.target.value)
                   }
+                  error={error.profile_name.message ?? undefined}
                 />
               </div>
             </div>
@@ -67,12 +75,11 @@ export const ProfilePage = () => {
               </label>
               <div className="w-full md:w-[60%]">
                 <AppTextField
-                  id="lastName"
-                  name="profile_last_name"
                   value={profile_last_name}
                   onChange={(e) =>
                     onChangeDetails("profile_last_name", e.target.value)
                   }
+                  error={error.profile_last_name.message ?? undefined}
                 />
               </div>
             </div>
@@ -85,12 +92,11 @@ export const ProfilePage = () => {
               </label>
               <div className="w-full md:w-[60%]">
                 <AppTextField
-                  id="email"
-                  name="Profile_email"
                   value={profile_email}
                   onChange={(e) =>
                     onChangeDetails("profile_email", e.target.value)
                   }
+                  error={error.profile_email.message ?? undefined}
                 />
               </div>
             </div>
