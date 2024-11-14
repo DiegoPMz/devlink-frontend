@@ -19,9 +19,10 @@ type ProfileStateSomeKeys = keyof Pick<
   UserSliceProfile,
   "profile_email" | "profile_name" | "profile_last_name" | "profile_file"
 >;
-type ProfileStateSomeValues = NonNullable<
-  Pick<UserSliceProfile, ProfileStateSomeKeys>[ProfileStateSomeKeys]
->;
+type ProfileStateSomeValues = Pick<
+  UserSliceProfile,
+  ProfileStateSomeKeys
+>[ProfileStateSomeKeys];
 
 interface UserSliceMethods {
   generateLink: () => void;
@@ -103,9 +104,13 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
     },
 
     onChangeDetails: (inputName, value) => {
-      set((state) => ({
-        user: { ...state.user, [inputName]: value },
-      }));
+      const captureValues = (stateName: typeof inputName) => {
+        set((state) => ({
+          user: { ...state.user, [stateName]: value },
+        }));
+      };
+
+      value === null ? captureValues("profile_file") : captureValues(inputName);
 
       get().appErrors.validateProfile(inputName, value);
     },

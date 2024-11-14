@@ -36,7 +36,7 @@ interface ErrorSliceMethods {
   getErrorLink: (id: ProfileLinks["id"]) => ErrorProfileLinks | null;
   validateProfile: <K extends GetErrorProfileKeys>(
     state: K,
-    value: NonNullable<UserSliceProfile[K]>,
+    value: UserSliceProfile[K],
   ) => void;
   areErrors: () => boolean;
 }
