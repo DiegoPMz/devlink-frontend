@@ -78,6 +78,8 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
           profile_links: updatedLinks,
         },
       }));
+
+      updatedLinks.length === 0 && get().appErrors.clearLinkErrors();
     },
 
     onChangeLink: (id, value) => {

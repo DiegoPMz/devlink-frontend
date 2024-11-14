@@ -8,7 +8,7 @@ import {
 import { ProfileLinks } from "@/types/api-response";
 import schemaValidator from "@/utilities/schema-validator";
 import { StateCreator } from "zustand";
-import { UserSliceProfile } from "./userSlice";
+import { UserSliceProfile, UserSliceType } from "./userSlice";
 
 type ErrorLinkStructure = Record<keyof Omit<ProfileLinks, "id">, string | null>;
 interface ErrorProfileDetails {
@@ -39,13 +39,14 @@ interface ErrorSliceMethods {
     value: UserSliceProfile[K],
   ) => void;
   areErrors: () => boolean;
+  clearLinkErrors: () => void;
 }
 
 export interface ErrorSliceType {
   appErrors: ErrorSliceMethods & ErrorSliceState;
 }
 type ErrorSliceBuildType = StateCreator<
-  ErrorSliceType,
+  ErrorSliceType & UserSliceType,
   [["zustand/devtools", never]],
   [],
   ErrorSliceType
@@ -114,9 +115,19 @@ export const errorSlice: ErrorSliceBuildType = (set, get) => ({
         },
       }));
     },
+
     getErrorLink: (id) => {
       const errLinks = get().appErrors.profile_links;
       return errLinks.find((err) => err.stateId === id) ?? null;
+    },
+
+    clearLinkErrors: () => {
+      set((state) => ({
+        appErrors: {
+          ...state.appErrors,
+          profile_links: [],
+        },
+      }));
     },
 
     validateProfile: (state, value) => {
@@ -148,6 +159,7 @@ export const errorSlice: ErrorSliceBuildType = (set, get) => ({
         appErrors: { ...state.appErrors, [errState]: newError },
       }));
     },
+
     areErrors: () => {
       const {
         profile_name,
