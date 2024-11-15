@@ -1,5 +1,6 @@
 import { AppPublishLink } from "@/components/AppPublishLink";
 import { AvatarImage } from "@/components/AvatarImage";
+import { AppButton } from "@/components/ui/AppButton";
 import { AppLink } from "@/components/ui/AppLink";
 import useProfileUpdateAnimation from "@/hooks/useProfileUpdateAnimation";
 import { useStoreApp } from "@/store";
@@ -14,6 +15,7 @@ export const PreviewPage = () => {
     profile_last_name,
     profile_email,
     profile_links,
+    isSubmissionAllowed,
   } = useStoreApp((state) => state.user);
 
   const emptyAnimation = useProfileUpdateAnimation();
@@ -26,12 +28,17 @@ export const PreviewPage = () => {
         <div className="z-[10] min-w-full md:p-[24px]">
           <div className="flex justify-between gap-[16px] px-[24px] py-[16px] md:rounded-lg md:bg-white">
             <div className="w-full md:w-fit">
-              <AppLink to={"/profile"} variant="secondary">
+              <AppLink to={"/profile"} variant="primary">
                 Back to Editor
               </AppLink>
             </div>
             <div className="w-full md:w-fit">
-              <AppLink to={"#"}> Share Link </AppLink>
+              <AppButton
+                variant="secondary"
+                disabled={isSubmissionAllowed() === false}
+              >
+                Share Link
+              </AppButton>
             </div>
           </div>
         </div>
@@ -41,6 +48,7 @@ export const PreviewPage = () => {
             imageUrl={profile_image.url ?? undefined}
             imageFile={profile_file ?? undefined}
             animation={emptyAnimation}
+            size="lg"
           />
 
           <div className="flex w-full flex-col items-center gap-[14px] pt-[25px]">
@@ -91,11 +99,7 @@ export const PreviewPage = () => {
                 }
 
                 return (
-                  <AppPublishLink
-                    key={link.id}
-                    link="#"
-                    socialMedia={isValidPlatform}
-                  />
+                  <AppPublishLink key={link.id} socialMedia={isValidPlatform} />
                 );
               })}
 

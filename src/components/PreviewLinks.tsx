@@ -84,7 +84,6 @@ export const PreviewLinks = () => {
                 <AppPublishLink
                   key={link.id}
                   size="sm"
-                  link="#"
                   socialMedia={isValidPlatform}
                 />
               );
