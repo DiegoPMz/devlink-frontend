@@ -17,7 +17,7 @@ export const AvatarImage = ({
     return (
       <span
         className={twclass(
-          "aspect-square w-[96px] rounded-full bg-appBorder",
+          "aspect-square w-[96px] rounded-full bg-ui-border-color",
           size === "lg" && "w-[108px]",
           animation ?? "",
         )}
@@ -28,7 +28,7 @@ export const AvatarImage = ({
   return (
     <div
       className={twclass(
-        "aspect-square w-[96px] rounded-full bg-appPurple p-[4px]",
+        "aspect-square w-[96px] rounded-full bg-accent-primary-color p-[4px]",
         size === "lg" && "w-[108px]",
       )}
     >

@@ -21,10 +21,10 @@ export const PreviewLinks = () => {
 
   return (
     <div className="relative flex h-[632px] w-[308px] items-center justify-center px-[13px] py-[44px]">
-      <div className="absolute z-10 rounded-[56px] bg-white invert-0">
+      <div className="absolute z-10 rounded-[56px]">
         <IllustrationPhone />
       </div>
-      <div className="z-20 flex h-full w-full max-w-full flex-col bg-white pt-[10px]">
+      <div className="z-20 flex h-full w-full max-w-full flex-col rounded-lg bg-bg-color-primary pt-[10px]">
         <div className="flex justify-center pt-[10px]">
           <AvatarImage
             imageUrl={profile_image.url ?? undefined}
@@ -35,33 +35,33 @@ export const PreviewLinks = () => {
 
         <div className="flex w-full max-w-full flex-col items-center gap-[12px] pt-[25px]">
           {isValidName ? (
-            <span className="w-full text-pretty break-words text-center font-semibold leading-none text-appGreyD">
+            <span className="w-full text-pretty break-words text-center font-semibold leading-none text-txt-color-secondary">
               {`${profile_name} ${profile_last_name}`}
             </span>
           ) : (
             <span
               className={twclass(
-                "h-[16px] w-[160px] rounded-[12px] bg-appBorder",
+                "h-[16px] w-[160px] rounded-[12px] bg-ui-border-color",
                 emptyAnimation,
               )}
             />
           )}
 
           {profile_email ? (
-            <span className="w-full text-pretty break-words text-center text-sm leading-none text-appGrey">
+            <span className="w-full text-pretty break-words text-center text-sm leading-none text-txt-color-primary">
               {profile_email}
             </span>
           ) : (
             <span
               className={twclass(
-                "h-[8px] w-[72px] rounded-[12px] bg-appBorder",
+                "h-[8px] w-[72px] rounded-[12px] bg-ui-border-color",
                 emptyAnimation,
               )}
             />
           )}
         </div>
 
-        <div className="scrollbar-custom mt-[56px] flex h-[310px] w-full flex-col gap-[20px] overflow-y-auto px-[21px]">
+        <div className="scrollbar-custom mt-[56px] flex h-[310px] w-full flex-col gap-[19px] overflow-y-auto px-[21px]">
           {profile_links.length >= 1 &&
             profile_links.map((link) => {
               const isValidPlatform = ArrayAvailableSocialMedia.find(
@@ -73,7 +73,7 @@ export const PreviewLinks = () => {
                   <span
                     key={link.id}
                     className={twclass(
-                      "min-h-[45px] w-full rounded-lg bg-appBorder",
+                      "min-h-[45px] w-full rounded-lg bg-ui-border-color",
                       emptyAnimation,
                     )}
                   />
@@ -96,7 +96,7 @@ export const PreviewLinks = () => {
                 <span
                   key={index}
                   className={twclass(
-                    "min-h-[45px] w-full rounded-lg bg-appBorder",
+                    "min-h-[45px] w-full rounded-lg bg-ui-border-color",
                     emptyAnimation,
                   )}
                 />

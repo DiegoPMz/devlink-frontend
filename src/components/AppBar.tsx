@@ -26,7 +26,7 @@ export const AppBar = () => {
   }, [isMenuActive]);
 
   return (
-    <header className="rounded-xl bg-white p-[14px] md:px-[24px] md:py-[16px]">
+    <header className="rounded-xl bg-bg-color-primary p-[14px] md:px-[24px] md:py-[16px]">
       <nav className="flex items-center justify-between">
         <div className="md:hidden">
           <LogoDevlinksSmall />
@@ -62,7 +62,7 @@ export const AppBar = () => {
           <div className="relative">
             <button
               onClick={() => setIsMenuActive(!isMenuActive)}
-              className="flex items-center justify-center p-[4px] text-appPurple md:p-[8px]"
+              className="flex items-center justify-center p-[4px] text-accent-primary-color md:p-[8px]"
               id="user-menu-modal"
             >
               <FaBars className="pointer-events-none h-[20px] w-[20px]" />
