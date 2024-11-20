@@ -11,8 +11,8 @@ export const AppLinkTab = ({ children, ...props }: AppLinkTabProps) => {
       {...props}
       className={({ isActive }) =>
         twclass(
-          "relative block w-fit rounded-md px-[28px] py-[11px] font-semibold text-txt-color-primary hover:text-accent-primary-color",
-          isActive && "bg-accent-secondary-color text-accent-primary-color",
+          "hover:text-accent-s-contrast-color relative block w-fit rounded-md px-[28px] py-[11px] font-semibold text-txt-color-primary transition-colors duration-200 ease-in",
+          isActive && "text-accent-s-contrast-color bg-accent-secondary-color",
         )
       }
     >

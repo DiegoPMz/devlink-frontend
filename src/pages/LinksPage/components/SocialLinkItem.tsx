@@ -23,8 +23,8 @@ export const SocialLinkItem = ({
   const { getErrorLink } = useStoreApp((state) => state.appErrors);
 
   return (
-    <div className="flex flex-col gap-[12px] rounded-lg bg-appGreyL p-[20px]">
-      <article className="flex justify-between text-appGrey">
+    <div className="flex flex-col gap-[12px] rounded-lg bg-bg-color-secondary p-[20px]">
+      <article className="flex justify-between text-txt-color-primary">
         <div className="flex items-center gap-[8px] font-bold">
           <HiBars2 />
           <span>Link #{position + 1} </span>
@@ -32,7 +32,7 @@ export const SocialLinkItem = ({
         <button
           type="button"
           formNoValidate
-          className="transition-colors duration-200 ease-out hover:text-appRed"
+          className="transition-colors duration-200 ease-out hover:text-error-primary-color"
           onClick={() => removeLink(link.id)}
         >
           Remove
@@ -41,9 +41,7 @@ export const SocialLinkItem = ({
       {/*  */}
       <article className="flex flex-col gap-[12px]">
         <div>
-          <label className="text-xs text-appGreyD" htmlFor="">
-            Platform
-          </label>
+          <label className="text-xs text-txt-color-secondary">Platform</label>
           <AppDropDown
             options={SocialMediaCollection}
             onChange={(e) =>
@@ -56,9 +54,7 @@ export const SocialLinkItem = ({
           />
         </div>
         <div>
-          <label className="text-xs text-appGreyD" htmlFor="">
-            Link
-          </label>
+          <label className="text-xs text-txt-color-secondary">Link</label>
           <AppTextField
             onChange={(e) =>
               onChangeLink(link.id, {

@@ -20,7 +20,12 @@ export const AppTextField = forwardRef<HTMLInputElement, AppTextFieldProps>(
         <div
           className={`pointer-events-none absolute inset-0 flex items-center justify-between px-[12px]`}
         >
-          <div className="aspect-square max-w-[14px] text-txt-color-primary">
+          <div
+            className={twclass(
+              "aspect-square max-w-[14px] text-txt-color-primary",
+              error && "text-error-primary-color",
+            )}
+          >
             {icon ?? <GoLink className="h-[14px]" />}
           </div>
           {error && (
@@ -32,9 +37,9 @@ export const AppTextField = forwardRef<HTMLInputElement, AppTextFieldProps>(
           {...props}
           ref={ref}
           className={twclass(
-            "w-full rounded-md py-[12px] pl-[36px] pr-[12px] ring-1 ring-ui-border-color autofill:bg-error-primary-color focus-visible:shadow-app focus-visible:outline-none focus-visible:ring-accent-primary-color",
+            "w-full rounded-md bg-bg-color-primary py-[12px] pl-[36px] pr-[12px] text-txt-color-secondary ring-1 ring-ui-border-color autofill:bg-error-primary-color focus-visible:shadow-app focus-visible:outline-none focus-visible:ring-accent-primary-color",
             error &&
-              "text-error-primary-color ring-error-primary-color focus-visible:shadow-none focus-visible:ring-2 focus-visible:ring-error-primary-color",
+              "text-error-primary-color ring-error-primary-color focus-visible:shadow-appError focus-visible:ring-2 focus-visible:ring-error-primary-color",
           )}
           type={props.type ?? "text"}
           placeholder={props.placeholder ?? "Default placeholder ~"}

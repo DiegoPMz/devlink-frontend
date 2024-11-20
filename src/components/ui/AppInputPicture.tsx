@@ -72,26 +72,26 @@ export const AppInputPicture = ({
   return (
     <div
       className={twclass(
-        "relative z-[60] flex aspect-square w-[193px] min-w-[193px] cursor-grab overflow-hidden rounded-lg bg-appPurpleL before:pointer-events-none before:absolute before:inset-0 before:z-0 before:rounded-lg before:bg-black before:opacity-0 before:transition-opacity before:duration-200 before:ease-linear",
+        "relative z-[60] flex aspect-square w-[193px] min-w-[193px] cursor-grab overflow-hidden rounded-lg bg-accent-secondary-color before:pointer-events-none before:absolute before:inset-0 before:z-0 before:rounded-lg before:bg-black before:opacity-0 before:transition-opacity before:duration-200 before:ease-linear",
         currentImage &&
           "hover:before:contents-[''] before:pointer-events-auto hover:before:opacity-60",
-        fileError.isError && "ring-1 ring-appRed",
+        fileError.isError && "ring-1 ring-error-primary-color",
       )}
       onClick={triggerFileEvent}
     >
-      <div className="pointer-events-none absolute flex h-full w-full flex-col items-center justify-center text-appPurple">
+      <div className="pointer-events-none absolute flex h-full w-full flex-col items-center justify-center text-accent-primary-color">
         <AiOutlinePicture
           className={twclass(
             "h-[40px] w-[40px]",
             currentImage && "text-white",
-            fileError.isError && "text-appRed",
+            fileError.isError && "text-error-primary-color",
           )}
         />
         <span
           className={twclass(
             "font-bold",
             currentImage && "text-white",
-            fileError.isError && "text-appRed",
+            fileError.isError && "text-error-primary-color",
           )}
         >
           {!currentImage ? "+ Upload Image" : "Change Image"}
@@ -104,7 +104,7 @@ export const AppInputPicture = ({
       />
 
       {fileError.isError && (
-        <span className="absolute bottom-0 w-full text-center text-sm text-appRed">
+        <span className="absolute bottom-0 w-full text-center text-sm text-error-primary-color">
           {fileError.message}
         </span>
       )}

@@ -16,11 +16,11 @@ export const AppButton = ({
         {...props}
         type={props.type ?? "button"}
         className={twclass(
-          "flex h-full w-full items-center justify-center rounded-lg px-[24px] py-[8px] transition-colors duration-200 ease-out disabled:pointer-events-none",
+          "flex h-full w-full items-center justify-center rounded-lg px-[24px] py-[8px] duration-200 ease-out disabled:pointer-events-none",
           variant === "primary" &&
-            "bg-accent-primary-color text-white active:bg-accent-primary-color-h disabled:bg-accent-primary-color-h",
+            "text-accent-p-contrast-color bg-accent-primary-color transition-opacity active:opacity-50 disabled:opacity-50",
           variant === "secondary" &&
-            "font-semibold text-accent-primary-color ring-1 ring-accent-primary-color active:bg-accent-secondary-color disabled:opacity-25",
+            "text-accent-s-contrast-color font-semibold ring-1 ring-accent-primary-color transition-colors active:bg-accent-secondary-color disabled:opacity-25",
         )}
       >
         {children}

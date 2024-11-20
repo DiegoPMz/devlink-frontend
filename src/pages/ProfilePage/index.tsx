@@ -26,15 +26,19 @@ export const ProfilePage = () => {
       <div className="flex flex-col gap-[40px]">
         {/* Container introduction "Profile Details" */}
         <div>
-          <h2 className="text-2xl font-bold text-appGreyD">Profile Details</h2>
-          <p className="text-appGrey">
+          <h2 className="text-2xl font-bold text-txt-color-secondary">
+            Profile Details
+          </h2>
+          <p className="text-txt-color-primary">
             Add your details to create a personal touch to your profile.
           </p>
         </div>
         <div className="flex flex-col gap-[24px]">
           {/* Container Profile picture */}
-          <div className="flex flex-col gap-[16px] rounded-lg bg-appGreyL p-[1.25rem] md:flex-row md:items-center md:justify-between">
-            <span className="text-appGrey md:min-w-fit">Profile picture</span>
+          <div className="flex flex-col gap-[16px] rounded-lg bg-bg-color-secondary p-[1.25rem] md:flex-row md:items-center md:justify-between">
+            <span className="text-txt-color-primary md:min-w-fit">
+              Profile picture
+            </span>
             <div className="flex flex-col gap-[24px] md:w-[60%] md:flex-row md:items-center">
               <AppInputPicture
                 onChange={(inputValue) =>
@@ -42,16 +46,16 @@ export const ProfilePage = () => {
                 }
                 addImage={currentImage()}
               />
-              <span className="text-xs text-appGrey">
+              <span className="text-xs text-txt-color-primary">
                 Image must be below 1024x1024px. Use PNG or JPG format.
               </span>
             </div>
           </div>
           {/*Container User inputs  */}
-          <div className="flex flex-col gap-[12px] rounded-lg bg-appGreyL p-[1.25rem]">
+          <div className="flex flex-col gap-[12px] rounded-lg bg-bg-color-secondary p-[1.25rem]">
             <div className="md:flex md:items-center md:justify-between">
               <label
-                className="text-xs text-appGrey md:text-base"
+                className="text-xs text-txt-color-primary md:text-base"
                 htmlFor="firstName"
               >
                 First name*
@@ -68,7 +72,7 @@ export const ProfilePage = () => {
             </div>
             <div className="md:flex md:items-center md:justify-between">
               <label
-                className="text-xs text-appGrey md:text-base"
+                className="text-xs text-txt-color-primary md:text-base"
                 htmlFor="lastName"
               >
                 Last name*
@@ -85,7 +89,7 @@ export const ProfilePage = () => {
             </div>
             <div className="md:flex md:items-center md:justify-between">
               <label
-                className="text-xs text-appGrey md:text-base"
+                className="text-xs text-txt-color-primary md:text-base"
                 htmlFor="email"
               >
                 Email*

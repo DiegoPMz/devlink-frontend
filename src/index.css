@@ -4,6 +4,26 @@
 @tailwind utilities;
 
 @layer components {
+  :root {
+    --bg-color-primary: rgb(255, 255, 255);
+    --bg-color-secondary: rgb(250, 250, 250);
+
+    --txt-color-primary: rgb(115, 115, 115);
+    --txt-color-secondary: rgb(51, 51, 51);
+
+    --accent-primary-color: rgb(99, 60, 255);
+    --accent-p-contrast-color: rgb(255, 255, 255);
+    --accent-primary-color-h: rgb(190, 173, 255);
+
+    --accent-secondary-color: rgb(239, 235, 255);
+    --accent-s-contrast-color: rgb(99, 60, 255);
+
+    --error-primary-color: rgb(255, 57, 57);
+    --ui-border-color: rgb(217, 217, 217);
+
+    --logo-text-color: #333;
+  }
+
   body {
     @apply bg-black;
     @apply min-h-[100dvh];

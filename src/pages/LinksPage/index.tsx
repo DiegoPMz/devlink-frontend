@@ -12,11 +12,11 @@ export const LinksPage = () => {
   return (
     <AppMainLayout>
       <div className="flex flex-col gap-[24px]">
-        <div className="flex flex-col rounded-md bg-white">
-          <h1 className="text-[24px] font-bold text-appGreyD">
+        <div className="flex flex-col rounded-md bg-bg-color-primary">
+          <h1 className="text-[24px] font-bold text-txt-color-secondary">
             Customize your links
           </h1>
-          <p className="pb-[30px] text-appGrey">
+          <p className="pb-[30px] text-txt-color-primary">
             Add/edit/remove links below and then share all your profiles with
             the world!
           </p>
