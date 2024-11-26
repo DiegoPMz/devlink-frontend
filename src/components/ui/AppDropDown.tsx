@@ -1,61 +1,57 @@
 import { twclass } from "@/utilities/twclass";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { IoIosArrowUp } from "react-icons/io";
 
 interface OptionType {
-  label: React.ReactNode;
+  displayName: string;
   value: string;
+  icon?: ReactNode;
 }
-type OptionsArrayType = OptionType[];
 
 interface AppDropDownProps {
-  options: OptionsArrayType;
-  onChange?: (...event: unknown[]) => void;
-  selected?: string | null;
+  options: OptionType[];
+  selected?: string;
   error?: string;
+  onChange?: (option: OptionType["value"]) => void;
 }
+
+type CurrentOptionType = undefined | OptionType;
 
 export const AppDropDown = ({
   options,
-  onChange,
   selected,
   error,
+  onChange,
 }: AppDropDownProps) => {
-  const [optionValue, setOptionValue] = useState<string>("");
-  const [labelSelected, setLabelSelected] = useState<
-    OptionType["label"] | null
-  >(selected ?? null);
-
   const [isActive, setIsActive] = useState(false);
+  const [currentOption, setCurrentOption] = useState<CurrentOptionType>(
+    options.find((op) => op.value === selected),
+  );
 
-  function handleSelectCurrentOption(
-    e: React.MouseEvent<HTMLInputElement, MouseEvent>,
-    reactNode: React.ReactNode,
-  ) {
-    setOptionValue(e.currentTarget.value);
-    setLabelSelected(reactNode);
+  const handleSelectOption = (selectedOption: OptionType) => {
     setIsActive(false);
 
-    if (onChange) {
-      onChange(e.currentTarget.value); // Update the value of react-hook-form
-    }
-  }
+    if (!selectedOption.value) return;
+    setCurrentOption(selectedOption);
+    onChange && onChange(selectedOption.value);
+  };
 
-  const AppDropDownRef = useRef<HTMLElement | null>(null);
+  const hasOptions =
+    options.length > 0 && options.some((op) => op.value && op.displayName);
+  const isDropMenuAvailable = hasOptions && isActive;
 
+  const AppDropDownRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!isActive) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        AppDropDownRef.current &&
-        !AppDropDownRef.current.contains(e.target as Node)
-      ) {
+      if (!AppDropDownRef.current) return;
+      if (!AppDropDownRef.current.contains(e.target as Node)) {
         setIsActive(false);
       }
     };
 
-    const bodyElement = document.querySelector("body");
+    const bodyElement = document.body;
     bodyElement?.addEventListener("click", handleClickOutside);
 
     return () => {
@@ -63,129 +59,100 @@ export const AppDropDown = ({
     };
   }, [isActive]);
 
-  const areValidOptions = options && options.length > 0;
-
   return (
-    <div className="w-full">
-      <section
+    <div
+      className={twclass(
+        "relative h-[40px] min-w-[255px] rounded-md bg-bg-color-primary ring-1 ring-ui-border-color",
+        isActive && "shadow-app ring-accent-primary-color",
+        error && "ring-error-primary-color",
+      )}
+    >
+      <button
+        type="button"
         ref={AppDropDownRef}
-        id="custom-drop"
-        className={twclass(
-          "relative flex h-[40px] min-w-[255px] items-center justify-between rounded-md bg-white text-appGreyD ring-1 ring-appBorder",
-          isActive && "shadow-app ring-appPurple",
-          error && "ring-appRed",
-          error && isActive && "shadow-appError",
-        )}
-      >
-        <button
-          onClick={() => setIsActive(!isActive)}
-          type="button"
-          className="h-full w-full"
-        />
-        {/* Here is where the current option its showed */}
-        <div
-          className={twclass(
-            "pointer-events-none absolute inset-0 flex items-center justify-between px-[12px] text-appGreyD",
+        className="absolute inset-0"
+        onClick={() => setIsActive(!isActive)}
+      />
+
+      <div className="flex h-full w-full items-center justify-between px-[16px]">
+        <div className="flex w-full items-center gap-[12px]">
+          {currentOption && (
+            <>
+              <div className="text-txt-color-primary">{currentOption.icon}</div>
+              <span className="text-txt-color-secondary">
+                {currentOption.displayName}
+              </span>
+            </>
           )}
-        >
-          <div>
-            {labelSelected && <div>{labelSelected}</div>}
 
-            {!labelSelected && error && (
-              <span className="text-sm text-appRed"> {error} </span>
-            )}
-          </div>
-
-          <div
-            className={twclass(
-              "h-fit w-fit text-appPurple transition-transform duration-[200ms] ease-custom-ease",
-              isActive && "rotate-[180deg]",
-              error && "text-appRed",
-            )}
-          >
-            <IoIosArrowUp />
-          </div>
+          {!currentOption && (
+            <span
+              className={twclass(
+                "text-txt-color-secondary",
+                error && "text-error-primary-color",
+              )}
+            >
+              Select...
+            </span>
+          )}
         </div>
 
-        {/* Drop menu  */}
-        {areValidOptions && (
-          <>
-            {isActive && (
-              <div className="absolute left-0 top-[125%] z-[1000] flex h-fit max-h-[287px] w-full flex-col overflow-y-scroll rounded-md bg-white text-appGreyD">
-                {options.map((op, index) =>
-                  op.value === optionValue ? (
-                    <OptionComponent
-                      key={op.value}
-                      optionsLength={options.length}
-                      selectOption={handleSelectCurrentOption}
-                      option={op}
-                      position={index}
-                      className="text-appPurple"
-                    >
-                      <span className="text-appPurple">(Selected)</span>
-                    </OptionComponent>
-                  ) : (
-                    <OptionComponent
-                      key={op.value}
-                      optionsLength={options.length}
-                      selectOption={handleSelectCurrentOption}
-                      option={op}
-                      position={index}
-                    />
-                  ),
+        <IoIosArrowUp
+          className={twclass(
+            "pointer-events-none h-[18px] w-[18px] rotate-0 text-accent-primary-color transition-transform duration-[200ms] ease-custom-ease",
+            isActive && "rotate-180",
+            error && "text-error-primary-color",
+          )}
+        />
+      </div>
+
+      {isDropMenuAvailable && (
+        <ul className="scrollbar-custom absolute left-0 top-[125%] z-[1000] flex h-fit max-h-[287px] w-full flex-col overflow-y-scroll rounded-md bg-bg-color-primary text-txt-color-secondary ring-2 ring-ui-border-color">
+          {options.map((option, i) => {
+            const { displayName, value, icon } = option;
+            const availableBorderBottom = i + 1 < options.length;
+            const areEqualValues = currentOption?.value === value;
+
+            return (
+              <li
+                key={value}
+                className="relative flex w-full items-center gap-[12px] px-[16px] py-[12px]"
+              >
+                <button
+                  type="button"
+                  className="absolute inset-0"
+                  onClick={() => handleSelectOption(option)}
+                />
+
+                {icon && (
+                  <div
+                    className={twclass(
+                      "text-txt-color-primary",
+                      areEqualValues && "text-accent-primary-color",
+                    )}
+                  >
+                    {icon}
+                  </div>
                 )}
-              </div>
-            )}
-          </>
-        )}
-      </section>
+                <span
+                  className={twclass(
+                    "text-txt-color-secondary",
+                    areEqualValues && "text-accent-primary-color",
+                  )}
+                >
+                  {displayName}
+                </span>
+
+                {availableBorderBottom && (
+                  <div className="absolute bottom-0 left-0 h-[2px] w-full px-[16px]">
+                    <div className="h-full w-full bg-ui-border-color" />
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 };
-
-// Component used above
-interface OptionComponentProps {
-  children?: React.ReactNode;
-  className?: string;
-  optionsLength: number;
-  option: OptionType;
-  position: number;
-  selectOption: (
-    e: React.MouseEvent<HTMLInputElement, MouseEvent>,
-    reactNode: React.ReactNode,
-  ) => void;
-}
-
-function OptionComponent({
-  optionsLength,
-  option,
-  position,
-  selectOption,
-  className = "",
-  children,
-}: OptionComponentProps) {
-  return (
-    <div key={option.value} className="relative">
-      <input
-        className="w-full cursor-pointer px-[16px] py-[12px] opacity-0"
-        type="button"
-        value={option.value}
-        onClick={(e) => selectOption(e, option.label)}
-      />
-
-      <div
-        className={twclass(
-          "pointer-events-none absolute inset-0 flex items-center gap-[2px] px-[16px] text-appGreyD",
-          className,
-          {
-            ["border-b-2 border-appBorder"]: position !== optionsLength - 1,
-          },
-        )}
-      >
-        {option.label}
-
-        {children}
-      </div>
-    </div>
-  );
-}
