@@ -39,7 +39,7 @@ const ERROR_INITIAL_STATE: LoginErrorState = {
   confirm_password: ERROR_STRUCTURE,
 };
 
-export const RegisterPage = () => {
+const RegisterPage = () => {
   const [registerData, setRegisterData] =
     useState<ApiRegisterBody>(INITIAL_STATE);
   const [error, setError] = useState<LoginErrorState>(ERROR_INITIAL_STATE);
@@ -193,3 +193,5 @@ export const RegisterPage = () => {
     </div>
   );
 };
+
+export default RegisterPage;

@@ -4,7 +4,7 @@ import { useStoreApp } from "@/store";
 import { EmptyLinkContent } from "./components/EmptyLinkContent";
 import { SocialLinkItem } from "./components/SocialLinkItem";
 
-export const LinksPage = () => {
+const LinksPage = () => {
   const { profile_links, onChangeLink, generateLink, removeLink } = useStoreApp(
     (state) => state.user,
   );
@@ -46,3 +46,5 @@ export const LinksPage = () => {
     </AppMainLayout>
   );
 };
+
+export default LinksPage;

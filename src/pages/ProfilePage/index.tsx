@@ -3,7 +3,7 @@ import { AppTextField } from "@/components/ui/AppTextField";
 import { AppMainLayout } from "@/layouts/AppMainLayout";
 import { useStoreApp } from "@/store";
 
-export const ProfilePage = () => {
+const ProfilePage = () => {
   const {
     profile_name,
     profile_last_name,
@@ -110,3 +110,5 @@ export const ProfilePage = () => {
     </AppMainLayout>
   );
 };
+
+export default ProfilePage;

@@ -7,7 +7,7 @@ import { useStoreApp } from "@/store";
 import { ArrayAvailableSocialMedia } from "@/types/social-media";
 import { twclass } from "@/utilities/twclass";
 
-export const PreviewPage = () => {
+const PreviewPage = () => {
   const {
     profile_image,
     profile_file,
@@ -121,3 +121,5 @@ export const PreviewPage = () => {
     </>
   );
 };
+
+export default PreviewPage;

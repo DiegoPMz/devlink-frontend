@@ -34,7 +34,7 @@ const ERROR_INITIAL_STATE: LoginErrorState = {
   password: ERROR_STRUCTURE,
 };
 
-export const LoginPage = () => {
+const LoginPage = () => {
   const [loginData, setLoginData] = useState<LoginState>(INITIAL_STATE);
   const [error, setError] = useState<LoginErrorState>(ERROR_INITIAL_STATE);
 
@@ -150,3 +150,5 @@ export const LoginPage = () => {
     </div>
   );
 };
+
+export default LoginPage;
