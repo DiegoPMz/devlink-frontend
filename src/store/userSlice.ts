@@ -1,3 +1,4 @@
+import { getPersistedTheme, ThemeAppValues } from "@/service/persist-theme";
 import { getPersistedState } from "@/service/persist-user";
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
 import { StateCreator } from "zustand";
@@ -14,6 +15,7 @@ export interface UserSliceProfile {
   profile_links: ProfileLinks[] | [];
   profile_template: string | null;
   profile_file: null | File;
+  theme: ThemeAppValues;
 }
 type ProfileStateSomeKeys = keyof Pick<
   UserSliceProfile,
@@ -25,6 +27,7 @@ type ProfileStateSomeValues = Pick<
 >[ProfileStateSomeKeys];
 
 interface UserSliceMethods {
+  handleChangeTheme: (theme: ThemeAppValues) => void;
   generateLink: () => void;
   removeLink: (id: string) => void;
   onChangeLink: (
@@ -52,6 +55,11 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
   user: {
     ...getPersistedState(),
     profile_file: null,
+    theme: getPersistedTheme() ?? "default-theme",
+    handleChangeTheme: (theme) => {
+      set((state) => ({ user: { ...state.user, theme } }));
+    },
+
     generateLink: () => {
       const UUID = crypto.randomUUID();
       const newLink: ProfileLinks = {
@@ -79,7 +87,7 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         },
       }));
 
-      updatedLinks.length === 0 && get().appErrors.clearLinkErrors();
+      get().appErrors.clearInvalidLinkErrors(updatedLinks);
     },
 
     onChangeLink: (id, value) => {
