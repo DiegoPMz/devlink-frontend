@@ -32,7 +32,15 @@ export const apiMethodHandler = async <E>(
 ): ApiServiceResponse<E> => {
   try {
     const response = await fetch(uri, options);
-    const resData: unknown = await response.json();
+    const contentType = response.headers.get("content-type");
+    let resData: unknown;
+
+    if (contentType?.includes("application/json")) {
+      resData = await response.json();
+    }
+    if (contentType?.includes("text/plain")) {
+      resData = await response.text();
+    }
 
     if (!response.ok)
       throw new ApiServiceError(response.status, resData as object);

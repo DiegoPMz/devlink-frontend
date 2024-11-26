@@ -2,20 +2,24 @@ import {
   ApiLoginBody,
   ApiRegisterBody,
   ApiUpdateTemplate,
-} from "@/types/api-request";
+} from "@/types/api-request-body";
 import {
+  ApiGetTemplateResponse,
+  ApiLoginResponse,
   ApiLogoutResponse,
   ApiRefreshTokenResponse,
   ApiRegisterResponse,
-  ApisGeneralResponse,
-  ApisGeneralResponseNoNulls,
+  ApiUpdateTemplateResponse,
 } from "@/types/api-response";
 import { apiMethodHandler, ApiServiceResponse } from "./api-handler";
 
+const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
+
 export const apiLoginService = async (
   body: ApiLoginBody,
-): ApiServiceResponse<ApisGeneralResponse> => {
-  const API = "http://localhost:4000/api/devlink/auth/login";
+): ApiServiceResponse<ApiLoginResponse> => {
+  const API = `${API_BASE_URL}/auth/login`;
+
   const OPTIONS: RequestInit = {
     credentials: "include",
     method: "POST",
@@ -33,7 +37,8 @@ export const apiLoginService = async (
 export const apiRegisterService = async (
   body: ApiRegisterBody,
 ): ApiServiceResponse<ApiRegisterResponse> => {
-  const API = "";
+  const API = `${API_BASE_URL}/auth/register`;
+
   const OPTIONS: RequestInit = {
     credentials: "include",
     method: "POST",
@@ -50,10 +55,10 @@ export const apiRegisterService = async (
 
 export const apiRefreshTokenService =
   async (): ApiServiceResponse<ApiRefreshTokenResponse> => {
-    const API = "";
+    const API = `${API_BASE_URL}/auth/refresh-token`;
     const OPTIONS: RequestInit = {
       credentials: "include",
-      method: "POST",
+      method: "GET",
       headers: {
         // prettier-ignore
         "Accept": "application/json",
@@ -65,10 +70,10 @@ export const apiRefreshTokenService =
 
 export const apiLogoutService =
   async (): ApiServiceResponse<ApiLogoutResponse> => {
-    const API = "";
+    const API = `${API_BASE_URL}/auth/logout`;
     const OPTIONS: RequestInit = {
       credentials: "include",
-      method: "POST",
+      method: "GET",
       headers: {
         // prettier-ignore
         "Accept": "application/json",
@@ -81,12 +86,12 @@ export const apiLogoutService =
 export const apiUpdateTemplateService = async (
   body: ApiUpdateTemplate,
   file?: File,
-): ApiServiceResponse<ApisGeneralResponseNoNulls> => {
+): ApiServiceResponse<ApiUpdateTemplateResponse> => {
   const formData = new FormData();
   formData.append("data", JSON.stringify(body));
   if (file) formData.append("user_file", file);
 
-  const API = "";
+  const API = `${API_BASE_URL}/template`;
   const OPTIONS: RequestInit = {
     credentials: "include",
     method: "PUT",
@@ -102,8 +107,8 @@ export const apiUpdateTemplateService = async (
 
 export const apiGetTemplateService = async (
   paramID: string,
-): ApiServiceResponse<ApisGeneralResponseNoNulls> => {
-  const API = `http://localhost:4000/api/devlink/${paramID}`;
+): ApiServiceResponse<ApiGetTemplateResponse> => {
+  const API = `${API_BASE_URL}/template/${paramID}`;
   const OPTIONS: RequestInit = {
     method: "GET",
     headers: {
