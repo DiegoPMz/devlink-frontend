@@ -1,7 +1,17 @@
+import { useStoreApp } from "@/store";
+import ThemePicker from "./ThemePicker";
+
 const UserMenuModal = () => {
+  const storeLogoutMethod = useStoreApp((state) => state.logout);
+
   return (
-    <div className="absolute bottom-[-40px] right-0 z-[90] flex w-[160px] flex-col rounded-xl bg-white shadow-sm shadow-appPurpleH">
-      <button className="w-full p-[8px] font-medium text-appGreyD">
+    <div className="absolute right-[100%] top-[100%] z-[300] flex h-fit w-[200px] flex-col gap-[16px] rounded-xl bg-bg-color-primary p-[8px] shadow-sm shadow-ui-border-color">
+      <ThemePicker />
+
+      <button
+        onClick={storeLogoutMethod}
+        className="w-full rounded-lg bg-accent-secondary-color p-[8px] font-medium text-accent-s-contrast-color"
+      >
         Logout
       </button>
     </div>

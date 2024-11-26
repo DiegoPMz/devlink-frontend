@@ -1,10 +1,9 @@
-import { SocialMediaCollection } from "@/components/SocialMediaCollection";
 import { AppDropDown } from "@/components/ui/AppDropDown";
 import { AppTextField } from "@/components/ui/AppTextField";
 import { useStoreApp } from "@/store";
 import { UserSliceType } from "@/store/userSlice";
 import { ProfileLinks } from "@/types/api-response";
-import { AvailableSocialMedia } from "@/types/social-media";
+import PublishDetailsMap from "@/utilities/PublishDetailsMap";
 import { HiBars2 } from "react-icons/hi2";
 
 interface SocialLinkItemProps {
@@ -21,6 +20,7 @@ export const SocialLinkItem = ({
   onChangeLink,
 }: SocialLinkItemProps) => {
   const { getErrorLink } = useStoreApp((state) => state.appErrors);
+  const options = Object.values(PublishDetailsMap);
 
   return (
     <div className="flex flex-col gap-[12px] rounded-lg bg-bg-color-secondary p-[20px]">
@@ -43,11 +43,11 @@ export const SocialLinkItem = ({
         <div>
           <label className="text-xs text-txt-color-secondary">Platform</label>
           <AppDropDown
-            options={SocialMediaCollection}
-            onChange={(e) =>
+            options={options}
+            onChange={(currentOption) =>
               onChangeLink(link.id, {
                 ...link,
-                platform: e as AvailableSocialMedia,
+                platform: currentOption,
               })
             }
             selected={link.platform}

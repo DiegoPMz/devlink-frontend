@@ -79,18 +79,18 @@ export const AppInputPicture = ({
       )}
       onClick={triggerFileEvent}
     >
-      <div className="pointer-events-none absolute flex h-full w-full flex-col items-center justify-center text-accent-primary-color">
+      <div className="pointer-events-none absolute flex h-full w-full flex-col items-center justify-center">
         <AiOutlinePicture
           className={twclass(
-            "h-[40px] w-[40px]",
-            currentImage && "text-white",
+            "h-[40px] w-[40px] text-accent-primary-color",
+            currentImage && "text-accent-p-contrast-color",
             fileError.isError && "text-error-primary-color",
           )}
         />
         <span
           className={twclass(
-            "font-bold",
-            currentImage && "text-white",
+            "font-bold text-accent-primary-color",
+            currentImage && "text-accent-p-contrast-color",
             fileError.isError && "text-error-primary-color",
           )}
         >
