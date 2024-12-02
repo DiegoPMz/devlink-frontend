@@ -1,4 +1,12 @@
 import {
+  ApiGetTemplateErrorResponse,
+  ApiLoginErrorResponse,
+  ApiLogoutErrorResponse,
+  ApiRefreshTokenErrorResponse,
+  ApiRegisterErrorResponse,
+  ApiUpdateTemplateErrorResponse,
+} from "@/types/api-error-response";
+import {
   ApiLoginBody,
   ApiRegisterBody,
   ApiUpdateTemplate,
@@ -17,7 +25,7 @@ const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL;
 
 export const apiLoginService = async (
   body: ApiLoginBody,
-): ApiServiceResponse<ApiLoginResponse> => {
+): ApiServiceResponse<ApiLoginResponse, ApiLoginErrorResponse> => {
   const API = `${API_BASE_URL}/auth/login`;
 
   const OPTIONS: RequestInit = {
@@ -36,7 +44,7 @@ export const apiLoginService = async (
 
 export const apiRegisterService = async (
   body: ApiRegisterBody,
-): ApiServiceResponse<ApiRegisterResponse> => {
+): ApiServiceResponse<ApiRegisterResponse, ApiRegisterErrorResponse> => {
   const API = `${API_BASE_URL}/auth/register`;
 
   const OPTIONS: RequestInit = {
@@ -53,40 +61,47 @@ export const apiRegisterService = async (
   return await apiMethodHandler(API, OPTIONS);
 };
 
-export const apiRefreshTokenService =
-  async (): ApiServiceResponse<ApiRefreshTokenResponse> => {
-    const API = `${API_BASE_URL}/auth/refresh-token`;
-    const OPTIONS: RequestInit = {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        // prettier-ignore
-        "Accept": "application/json",
-      },
-    };
-
-    return await apiMethodHandler(API, OPTIONS);
+export const apiRefreshTokenService = async (): ApiServiceResponse<
+  ApiRefreshTokenResponse,
+  ApiRefreshTokenErrorResponse
+> => {
+  const API = `${API_BASE_URL}/auth/refresh-token`;
+  const OPTIONS: RequestInit = {
+    credentials: "include",
+    method: "GET",
+    headers: {
+      // prettier-ignore
+      "Accept": "application/json",
+    },
   };
 
-export const apiLogoutService =
-  async (): ApiServiceResponse<ApiLogoutResponse> => {
-    const API = `${API_BASE_URL}/auth/logout`;
-    const OPTIONS: RequestInit = {
-      credentials: "include",
-      method: "GET",
-      headers: {
-        // prettier-ignore
-        "Accept": "application/json",
-      },
-    };
+  return await apiMethodHandler(API, OPTIONS);
+};
 
-    return await apiMethodHandler(API, OPTIONS);
+export const apiLogoutService = async (): ApiServiceResponse<
+  ApiLogoutResponse,
+  ApiLogoutErrorResponse
+> => {
+  const API = `${API_BASE_URL}/auth/logout`;
+  const OPTIONS: RequestInit = {
+    credentials: "include",
+    method: "GET",
+    headers: {
+      // prettier-ignore
+      "Accept": "application/json",
+    },
   };
+
+  return await apiMethodHandler(API, OPTIONS);
+};
 
 export const apiUpdateTemplateService = async (
   body: ApiUpdateTemplate,
   file?: File,
-): ApiServiceResponse<ApiUpdateTemplateResponse> => {
+): ApiServiceResponse<
+  ApiUpdateTemplateResponse,
+  ApiUpdateTemplateErrorResponse
+> => {
   const formData = new FormData();
   formData.append("data", JSON.stringify(body));
   if (file) formData.append("user_file", file);
@@ -107,7 +122,7 @@ export const apiUpdateTemplateService = async (
 
 export const apiGetTemplateService = async (
   paramID: string,
-): ApiServiceResponse<ApiGetTemplateResponse> => {
+): ApiServiceResponse<ApiGetTemplateResponse, ApiGetTemplateErrorResponse> => {
   const API = `${API_BASE_URL}/template/${paramID}`;
   const OPTIONS: RequestInit = {
     method: "GET",

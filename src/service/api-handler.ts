@@ -1,66 +1,64 @@
+import { BaseApiErrorResponse } from "@/types/api-error-response";
 import { ApiServiceError } from "@/utilities/AppCustomErrors";
 
-interface ApiServiceObjectError {
-  isError: boolean;
-  status: number | null;
-  cause: string | object | null;
+export interface ApiServiceResponseStructure<D, E> {
+  error: {
+    isError: boolean;
+    status: number;
+    cause: E | BaseApiErrorResponse | null;
+  };
+  data: D | null;
 }
-interface ApiServiceStructureResponse<T> {
-  error: ApiServiceObjectError;
-  data: T | null;
-}
-export type ApiServiceResponse<I> = Promise<ApiServiceStructureResponse<I>>;
 
-const DEFAULT_ERROR_RESPONSE: ApiServiceObjectError = {
-  isError: false,
-  status: null,
-  cause: null,
-};
+export type ApiServiceResponse<R, E> = Promise<
+  ApiServiceResponseStructure<R, E>
+>;
 
-const generateApiError = (
-  status: ApiServiceObjectError["status"],
-  cause: ApiServiceObjectError["cause"],
-): ApiServiceObjectError => ({
-  isError: true,
-  status: status,
-  cause: cause,
-});
-
-export const apiMethodHandler = async <E>(
+export const apiMethodHandler = async <R, E extends BaseApiErrorResponse>(
   uri: string,
   options: RequestInit,
-): ApiServiceResponse<E> => {
+): ApiServiceResponse<R, E> => {
   try {
     const response = await fetch(uri, options);
     const contentType = response.headers.get("content-type");
     let resData: unknown;
 
-    if (contentType?.includes("application/json")) {
+    if (contentType?.includes("application/json"))
       resData = await response.json();
-    }
-    if (contentType?.includes("text/plain")) {
-      resData = await response.text();
-    }
 
-    if (!response.ok)
-      throw new ApiServiceError(response.status, resData as object);
+    if (!response.ok) throw new ApiServiceError(response.status, resData as E);
 
     return {
-      error: DEFAULT_ERROR_RESPONSE,
-      data: resData as E,
+      error: {
+        isError: false,
+        status: response.status,
+        cause: null,
+      },
+      data: resData as R,
     };
   } catch (error: unknown) {
     if (error instanceof ApiServiceError) {
       return {
-        error: generateApiError(error.status, error.resErrors),
+        error: {
+          isError: true,
+          status: error.status,
+          cause: error.resErrors as E,
+        },
+
         data: null,
       };
     } else {
       return {
-        error: generateApiError(
-          500,
-          "An unexpected error occurred. Please try again later or contact support if the problem persists",
-        ),
+        error: {
+          isError: true,
+          status: 500,
+          cause: {
+            status: 500,
+            cause: {
+              service: "We're having some issues. Please try again later",
+            },
+          },
+        },
         data: null,
       };
     }
