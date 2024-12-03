@@ -52,7 +52,7 @@ const ProfilePage = () => {
             </div>
           </div>
           {/*Container User inputs  */}
-          <div className="flex flex-col gap-[12px] rounded-lg bg-bg-color-secondary p-[1.25rem]">
+          <div className="flex flex-col gap-[12px] rounded-lg bg-bg-color-secondary px-[20px] py-[24px] md:gap-[28px]">
             <div className="md:flex md:items-center md:justify-between">
               <label
                 className="text-xs text-txt-color-primary md:text-base"
@@ -62,6 +62,7 @@ const ProfilePage = () => {
               </label>
               <div className="w-full md:w-[60%]">
                 <AppTextField
+                  placeholder="e.g. John"
                   value={profile_name}
                   onChange={(e) =>
                     onChangeDetails("profile_name", e.target.value)
@@ -79,6 +80,7 @@ const ProfilePage = () => {
               </label>
               <div className="w-full md:w-[60%]">
                 <AppTextField
+                  placeholder="e.g. Appleseed"
                   value={profile_last_name}
                   onChange={(e) =>
                     onChangeDetails("profile_last_name", e.target.value)
@@ -96,6 +98,7 @@ const ProfilePage = () => {
               </label>
               <div className="w-full md:w-[60%]">
                 <AppTextField
+                  placeholder="e.g. email@example.com"
                   value={profile_email}
                   onChange={(e) =>
                     onChangeDetails("profile_email", e.target.value)

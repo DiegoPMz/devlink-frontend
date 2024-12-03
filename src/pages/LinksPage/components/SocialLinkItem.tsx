@@ -23,7 +23,7 @@ export const SocialLinkItem = ({
   const options = Object.values(PublishDetailsMap);
 
   return (
-    <div className="flex flex-col gap-[12px] rounded-lg bg-bg-color-secondary p-[20px]">
+    <div className="flex flex-col gap-[12px] rounded-lg bg-bg-color-secondary px-[20px] py-[24px] xl:px-[24px] xl:py-[28px]">
       <article className="flex justify-between text-txt-color-primary">
         <div className="flex items-center gap-[8px] font-bold">
           <HiBars2 />
