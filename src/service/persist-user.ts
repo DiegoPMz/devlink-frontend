@@ -1,5 +1,7 @@
-import { UserSliceProfile } from "@/store/userSlice";
+import { UserSliceProfile, UserSliceType } from "@/store/userSlice";
 import { getData } from "@/utilities/localStorage-utils";
+
+export type PersistUserType = Omit<UserSliceProfile, "profile_file" | "theme">;
 
 interface PersistZustandType {
   state: Omit<UserSliceProfile, "profile_file">;
@@ -14,7 +16,7 @@ export const getUserDetails = () => {
 };
 
 export const getPersistedState = () => {
-  const EMPTY_STATE: Omit<UserSliceProfile, "profile_file"> = {
+  const EMPTY_STATE: PersistUserType = {
     id: null,
     credentials: null,
     profile_email: "",
@@ -29,3 +31,14 @@ export const getPersistedState = () => {
   if (!getState) return EMPTY_STATE;
   return getState.state;
 };
+
+export const toPersistableUser = ({ user }: UserSliceType) => ({
+  credentials: user.credentials,
+  id: user.id,
+  profile_email: user.profile_email,
+  profile_name: user.profile_name,
+  profile_last_name: user.profile_last_name,
+  profile_image: user.profile_image,
+  profile_links: user.profile_links,
+  profile_template: user.profile_template,
+});
