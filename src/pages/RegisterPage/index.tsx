@@ -110,8 +110,34 @@ const RegisterPage = () => {
     const { email, password, confirm_password } = error;
     if (email.err || password.err || confirm_password.err) return;
 
-    const isRegistered = await storeSignupMethod(registerData);
-    if (isRegistered) navigate("/links");
+    const registerFail = await storeSignupMethod(registerData);
+    if (!registerFail) return navigate("/links");
+
+    const errors = registerFail.cause;
+    let setNewErrors = { ...error };
+
+    if (errors?.email) {
+      setNewErrors = {
+        ...setNewErrors,
+        email: { err: true, message: errors.email },
+      };
+    }
+
+    if (errors?.password) {
+      setNewErrors = {
+        ...setNewErrors,
+        password: { err: true, message: errors.password },
+      };
+    }
+
+    if (errors?.confirm_password) {
+      setNewErrors = {
+        ...setNewErrors,
+        confirm_password: { err: true, message: errors.confirm_password },
+      };
+    }
+
+    setError(setNewErrors);
   };
 
   const validateDisabledButton = () => {

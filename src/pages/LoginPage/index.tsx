@@ -86,8 +86,26 @@ const LoginPage = () => {
     const { email, password } = error;
     if (email.err || password.err) return;
 
-    const isAuthenticated = await storeLoginMethod(loginData);
-    if (isAuthenticated) navigate("/links");
+    const loginResponse = await storeLoginMethod(loginData);
+    if (!loginResponse) navigate("/links");
+
+    const errors = loginResponse?.cause;
+    let setNewErrors = { ...error };
+
+    if (errors?.password) {
+      setNewErrors = {
+        ...setNewErrors,
+        password: { err: true, message: errors.password },
+      };
+    }
+    if (errors?.email) {
+      setNewErrors = {
+        ...setNewErrors,
+        email: { err: true, message: errors.email },
+      };
+    }
+
+    setError(setNewErrors);
   };
 
   const validateDisabledButton = Object.values(loginData).some(
@@ -95,7 +113,7 @@ const LoginPage = () => {
   );
 
   return (
-    <div className="md:bg-appCustom h-[100dvh] bg-white p-[32px] md:flex md:flex-col md:items-center md:justify-center md:gap-[32px] md:bg-appGreyL">
+    <div className="bg-appCustom h-[100dvh] p-[32px] md:flex md:flex-col md:items-center md:justify-center md:gap-[32px]">
       <div>
         <LogoDevlinksLarge />
       </div>

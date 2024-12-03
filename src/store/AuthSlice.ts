@@ -4,13 +4,22 @@ import {
   apiRefreshTokenService,
   apiRegisterService,
 } from "@/service/api-service";
+import { deletePersistedTheme } from "@/service/persist-theme";
+import {
+  ApiLoginErrorResponse,
+  ApiRegisterErrorResponse,
+} from "@/types/api-error-response";
 import { ApiLoginBody, ApiRegisterBody } from "@/types/api-request-body";
+import handleApiWithToast from "@/utilities/handleApiWithToast";
 import { StateCreator } from "zustand";
+import { useStoreApp } from "./index";
 import { UserSliceType } from "./userSlice";
 
 interface AuthSliceMethods {
-  login: (data: ApiLoginBody) => Promise<boolean>;
-  signup: (data: ApiRegisterBody) => Promise<boolean>;
+  login: (data: ApiLoginBody) => Promise<undefined | ApiLoginErrorResponse>;
+  signup: (
+    data: ApiRegisterBody,
+  ) => Promise<undefined | ApiRegisterErrorResponse>;
   logout: () => void;
   refreshToken: () => void;
 }
@@ -26,14 +35,18 @@ type AuthSliceBuildType = StateCreator<
 
 export const authSlice: AuthSliceBuildType = (set) => ({
   login: async (data) => {
-    if (Object.values(data).some((val) => !val)) return false;
+    const response = await handleApiWithToast(apiLoginService(data), {
+      loading: "Logging in...",
+      success: "Login successful!",
+      error: "Failed to log in",
+    });
 
-    const response = await apiLoginService(data);
-    // pending
-    if (response.error.isError) return false;
-    if (!response.data) return false;
-
+    const errors = response.error.cause;
     const userDb = response.data;
+
+    if (!userDb || response.error.isError)
+      return errors as ApiLoginErrorResponse;
+
     set((state) => ({
       user: {
         ...state.user,
@@ -47,18 +60,21 @@ export const authSlice: AuthSliceBuildType = (set) => ({
         profile_template: userDb.profile_template,
       },
     }));
-    return true;
   },
 
   signup: async (data) => {
-    if (Object.values(data).some((val) => !val)) return false;
+    const response = await handleApiWithToast(apiRegisterService(data), {
+      loading: "Registering...",
+      success: "Registered successfully!",
+      error: "Registration failed",
+    });
 
-    const response = await apiRegisterService(data);
-    // pending
-    if (response.error.isError) return false;
-    if (!response.data) return false;
-
+    const errors = response.error.cause;
     const newUser = response.data;
+
+    if (!newUser || response.error.isError)
+      return errors as ApiRegisterErrorResponse;
+
     set((state) => ({
       user: {
         ...state.user,
@@ -72,18 +88,15 @@ export const authSlice: AuthSliceBuildType = (set) => ({
         profile_template: newUser.profile_template,
       },
     }));
-    return true;
   },
 
   logout: async () => {
-    const response = await apiLogoutService();
-    // pending
-    if (response.error.isError) return;
-    if (!response.data) return;
+    await apiLogoutService();
 
     set((state) => ({
       user: {
         ...state.user,
+        id: null,
         credentials: null,
         profile_email: "",
         profile_image: { id: null, url: null },
@@ -94,11 +107,13 @@ export const authSlice: AuthSliceBuildType = (set) => ({
         profile_file: null,
       },
     }));
+
+    useStoreApp.persist.clearStorage();
+    deletePersistedTheme();
   },
 
   refreshToken: async () => {
     const response = await apiRefreshTokenService();
-    //pending
     if (!response.error.isError && response.data) return;
 
     set((state) => ({
@@ -114,5 +129,8 @@ export const authSlice: AuthSliceBuildType = (set) => ({
         profile_file: null,
       },
     }));
+
+    useStoreApp.persist.clearStorage();
+    deletePersistedTheme();
   },
 });
