@@ -1,6 +1,6 @@
 import { twclass } from "@/utilities/twclass";
 import { forwardRef } from "react";
-import { GoLink } from "react-icons/go";
+import { LuLink } from "react-icons/lu";
 
 type InputExcludeType = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -26,7 +26,7 @@ export const AppTextField = forwardRef<HTMLInputElement, AppTextFieldProps>(
               error && "text-error-primary-color",
             )}
           >
-            {icon ?? <GoLink className="h-[14px]" />}
+            {icon ?? <LuLink className="h-[14px]" />}
           </div>
         </div>
 

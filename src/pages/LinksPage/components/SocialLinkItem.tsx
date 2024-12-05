@@ -4,7 +4,7 @@ import { useStoreApp } from "@/store";
 import { UserSliceType } from "@/store/userSlice";
 import { ProfileLinks } from "@/types/api-response";
 import PublishDetailsMap from "@/utilities/PublishDetailsMap";
-import { HiBars2 } from "react-icons/hi2";
+import { HiMiniBars2 } from "react-icons/hi2";
 
 interface SocialLinkItemProps {
   position: number;
@@ -24,9 +24,9 @@ export const SocialLinkItem = ({
 
   return (
     <div className="flex flex-col gap-[12px] rounded-lg bg-bg-color-secondary px-[20px] py-[24px] xl:px-[24px] xl:py-[28px]">
-      <article className="flex justify-between text-txt-color-primary">
+      <div className="flex justify-between text-txt-color-primary">
         <div className="flex items-center gap-[8px] font-bold">
-          <HiBars2 />
+          <HiMiniBars2 />
           <span>Link #{position + 1} </span>
         </div>
         <button
@@ -37,9 +37,9 @@ export const SocialLinkItem = ({
         >
           Remove
         </button>
-      </article>
+      </div>
       {/*  */}
-      <article className="flex flex-col gap-[12px]">
+      <div className="flex flex-col gap-[12px]">
         <div>
           <label className="text-xs text-txt-color-secondary">Platform</label>
           <AppDropDown
@@ -66,7 +66,7 @@ export const SocialLinkItem = ({
             error={getErrorLink(link.id)?.message.url ?? undefined}
           />
         </div>
-      </article>
+      </div>
     </div>
   );
 };
