@@ -1,6 +1,10 @@
+import generateLinkPopupMessage from "@/components/generateLinkPopupMessage";
+import generateLinkPopupToastIcon from "@/components/generateLinkPopupToastIcon";
 import { getPersistedTheme, ThemeAppValues } from "@/service/persist-theme";
 import { getPersistedState } from "@/service/persist-user";
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
+import PublishDetailsMap from "@/utilities/PublishDetailsMap";
+import toast from "react-hot-toast";
 import { StateCreator } from "zustand";
 import { AuthSliceType } from "./AuthSlice";
 import { ErrorSliceType } from "./errorSlice";
@@ -39,6 +43,9 @@ interface UserSliceMethods {
     value: ProfileStateSomeValues,
   ) => void;
   isSubmissionAllowed: () => boolean;
+
+  setProfileLinks: (links: ProfileLinks[]) => void;
+  handleLinkPopup: (linkId: ProfileLinks["id"]) => void;
 }
 export interface UserSliceType {
   user: UserSliceProfile & UserSliceMethods;
@@ -152,6 +159,33 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         !isMissingUserImage &&
         !hasInvalidUserLinks &&
         !hasAppErrors
+      );
+    },
+
+    setProfileLinks(links) {
+      set((state) => ({ user: { ...state.user, profile_links: [...links] } }));
+    },
+
+    handleLinkPopup: (linkId) => {
+      const links = get().user.profile_links;
+
+      const linkModified = links.find((item) => item.id === linkId);
+      const linkPosition = links.findIndex((item) => item.id === linkId);
+
+      const platformDetails = Object.values(PublishDetailsMap).find(
+        (detail) => detail.value === linkModified?.platform,
+      );
+
+      if (!linkModified) return;
+
+      toast(
+        generateLinkPopupMessage(
+          platformDetails?.displayName ?? "Empty link",
+          linkPosition,
+        ),
+        {
+          icon: generateLinkPopupToastIcon(platformDetails),
+        },
       );
     },
   },

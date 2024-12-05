@@ -14,7 +14,7 @@ import { TbBrandGithubFilled } from "react-icons/tb";
 
 import { AvailableSocialMedia } from "@/types/social-media";
 
-interface PublishDetailAttributes {
+export interface PublishDetailAttributes {
   displayName: string;
   color: string;
   icon: React.ReactNode;
