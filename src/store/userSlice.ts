@@ -5,6 +5,7 @@ import { getPersistedState } from "@/service/persist-user";
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
 import PublishDetailsMap from "@/utilities/PublishDetailsMap";
 import toast from "react-hot-toast";
+import { TbLinkOff, TbLinkPlus } from "react-icons/tb";
 import { StateCreator } from "zustand";
 import { AuthSliceType } from "./AuthSlice";
 import { ErrorSliceType } from "./errorSlice";
@@ -81,6 +82,20 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
           profile_links: [...state.user.profile_links, newLink],
         },
       }));
+
+      const links = get().user.profile_links;
+      const linkPosition = links.findIndex((item) => item.id === newLink.id);
+
+      toast(
+        generateLinkPopupMessage({
+          bold: "Link added",
+          message: linkPosition ? `on position ${linkPosition + 1}` : "🤷‍♂️",
+        }),
+
+        {
+          icon: TbLinkPlus({ className: "text-accent-primary-color" }),
+        },
+      );
     },
 
     removeLink: (id) => {
@@ -93,6 +108,18 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
           profile_links: updatedLinks,
         },
       }));
+
+      const linkPosition = allUserLinks.findIndex((item) => item.id === id);
+      toast(
+        generateLinkPopupMessage({
+          bold: "Link removed",
+          message: `on position ${linkPosition + 1}`,
+        }),
+
+        {
+          icon: TbLinkOff({ className: "text-accent-primary-color" }),
+        },
+      );
 
       get().appErrors.clearInvalidLinkErrors(updatedLinks);
     },
@@ -179,10 +206,10 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       if (!linkModified) return;
 
       toast(
-        generateLinkPopupMessage(
-          platformDetails?.displayName ?? "Empty link",
-          linkPosition,
-        ),
+        generateLinkPopupMessage({
+          bold: platformDetails?.displayName ?? "Empty link",
+          message: `updated to position ${linkPosition + 1}`,
+        }),
         {
           icon: generateLinkPopupToastIcon(platformDetails),
         },
