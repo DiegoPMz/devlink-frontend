@@ -6,8 +6,10 @@ interface LinkPopupMessages {
 const generateLinkPopupMessage = (text: LinkPopupMessages) => {
   return (
     <div className="flex gap-[4px]">
-      {text.bold && <span className="font-semibold">{text.bold}</span>}
-      <span> {text.message}</span>
+      {text.bold && (
+        <span className="min-w-fit font-semibold">{text.bold}</span>
+      )}
+      <span className="min-w-fit"> {text.message}</span>
     </div>
   );
 };

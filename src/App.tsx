@@ -1,3 +1,4 @@
+import { Toaster } from "react-hot-toast";
 import { Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { LinksPage } from "./pages/LinksPage";
@@ -18,6 +19,17 @@ const App = () => {
           <Route path="/preview" element={<PreviewPage />} />
         </Route>
       </Routes>
+      <Toaster
+        position="top-center"
+        reverseOrder
+        toastOptions={{
+          style: {
+            backgroundColor: "var(--bg-color-primary)",
+            color: "var(--txt-color-secondary)",
+            border: "1px solid var(--ui-border-color,red)",
+          },
+        }}
+      />
     </>
   );
 };

@@ -89,7 +89,7 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       toast(
         generateLinkPopupMessage({
           bold: "Link added",
-          message: linkPosition ? `on position ${linkPosition + 1}` : "🤷‍♂️",
+          message: linkPosition ? `on position #${linkPosition + 1}` : "🤷‍♂️",
         }),
 
         {
@@ -113,7 +113,7 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       toast(
         generateLinkPopupMessage({
           bold: "Link removed",
-          message: `on position ${linkPosition + 1}`,
+          message: `on position #${linkPosition + 1}`,
         }),
 
         {
@@ -208,7 +208,7 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       toast(
         generateLinkPopupMessage({
           bold: platformDetails?.displayName ?? "Empty link",
-          message: `updated to position ${linkPosition + 1}`,
+          message: `updated to position #${linkPosition + 1}`,
         }),
         {
           icon: generateLinkPopupToastIcon(platformDetails),
