@@ -26,6 +26,7 @@ export const profileLinkSchema = z
     url: z
       .string({ message: "Please enter a URL" })
       .min(1, { message: "URL cannot be empty" }),
+    id: z.string({ message: "Each profile link must have a unique ID" }),
   })
   .refine(
     (val) => {
@@ -33,7 +34,58 @@ export const profileLinkSchema = z
       return regex.test(val.url);
     },
     {
-      message: "The URL format is incorrect for the selected platform",
+      message: "URL incorrect for the selected platform",
       path: ["url"],
     },
   );
+
+export const profileUpdateSchema = z
+  .object({
+    profile_email: profileEmailSchema,
+    profile_name: profileNameSchema,
+    profile_last_name: profileLastNameSchema,
+    profile_links: z
+      .array(profileLinkSchema, {
+        message: "Profile links should be a valid list",
+      })
+      .nonempty({ message: "The list of user links cannot be empty" }),
+    profile_file: profileFileSchema.optional(),
+    profile_image: z
+      .object({
+        id: z.string({ message: "Image ID is required" }),
+        url: z
+          .string({ message: "Image URL is required" })
+          .url({ message: "Invalid URL format" }),
+      })
+      .optional(),
+  })
+  .refine((data) => data.profile_file || data.profile_image, {
+    message: "At least one of 'profile_file' or 'profile_image' is required",
+    path: ["profile_file", "profile_image"],
+  });
+
+export type profileUpdateSchemaType = z.infer<typeof profileUpdateSchema>;
+
+export const profileUpdateWithoutLinksSchema = z
+  .object({
+    profile_email: profileEmailSchema,
+    profile_name: profileNameSchema,
+    profile_last_name: profileLastNameSchema,
+    profile_file: profileFileSchema.optional(),
+    profile_image: z
+      .object({
+        id: z.string({ message: "Image ID is required" }),
+        url: z
+          .string({ message: "Image URL is required" })
+          .url({ message: "Invalid URL format" }),
+      })
+      .optional(),
+  })
+  .refine((data) => data.profile_file || data.profile_image, {
+    message: "At least one of 'profile_file' or 'profile_image' is required",
+    path: ["profile_file", "profile_image"],
+  });
+
+export type profileUpdateWithoutLinksSchemaType = z.infer<
+  typeof profileUpdateWithoutLinksSchema
+>;
