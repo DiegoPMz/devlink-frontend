@@ -1,4 +1,4 @@
-import { AvailableSocialMedia } from "@/types/social-media";
+import { AvailableSocialMedia } from "@/types/app-social-media";
 
 export const regexPatterns: Record<AvailableSocialMedia, RegExp> = {
   codewars: /^https:\/\/www\.codewars\.com\/users\/[a-zA-Z0-9_-]+$/,
@@ -11,10 +11,13 @@ export const regexPatterns: Record<AvailableSocialMedia, RegExp> = {
   gitlab: /^https:\/\/gitlab\.com\/[a-zA-Z0-9_-]+$/,
   github: /^https:\/\/github\.com\/[a-zA-Z0-9_-]+$/,
   hashnode: /^https:\/\/[a-zA-Z0-9_-]+\.hashnode\.dev$/,
+  instagram:
+    /^(?:https?:)?\/\/(?:www\.)?(?:instagram\.com|instagr\.am)\/[A-Za-z0-9_.]{1,30}\/?$/,
   linkedin: /^https:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+$/,
   stackoverflow:
     /^https:\/\/stackoverflow\.com\/users\/[0-9]+\/[a-zA-Z0-9_-]+$/,
-  twitter: /^https:\/\/(www\.)?twitter\.com\/[a-zA-Z0-9_]{1,15}$/,
   twitch: /^https:\/\/(www\.)?twitch\.tv\/[a-zA-Z0-9_]{4,25}$/,
-  youtube: /^https:\/\/(www\.)?youtube\.com\/(c|channel|user)\/[a-zA-Z0-9_-]+$/,
+  tiktok: /^https:\/\/(www\.)?tiktok\.com\/@[\w.-]{1,24}$/,
+  x: /^https:\/\/(www\.)?x\.com\/[a-zA-Z0-9_]{1,15}$/,
+  youtube: /^https:\/\/(www\.)?youtube\.com\/@[\w.-]+$/,
 };

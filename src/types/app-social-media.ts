@@ -8,10 +8,12 @@ export type AvailableSocialMedia =
   | "gitlab"
   | "github"
   | "hashnode"
+  | "instagram"
   | "linkedin"
   | "stackoverflow"
-  | "twitter"
   | "twitch"
+  | "tiktok"
+  | "x"
   | "youtube";
 
 export const ArrayAvailableSocialMedia = [
@@ -24,9 +26,11 @@ export const ArrayAvailableSocialMedia = [
   "gitlab",
   "github",
   "hashnode",
+  "instagram",
   "linkedin",
   "stackoverflow",
-  "twitter",
   "twitch",
+  "tiktok",
+  "x",
   "youtube",
 ] as const;

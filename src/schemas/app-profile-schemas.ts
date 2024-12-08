@@ -1,4 +1,4 @@
-import { ArrayAvailableSocialMedia } from "@/types/social-media";
+import { ArrayAvailableSocialMedia } from "@/types/app-social-media";
 import { regexPatterns } from "@/utilities/regex-social-media";
 import z from "zod";
 

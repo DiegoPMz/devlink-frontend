@@ -1,4 +1,4 @@
-import { AvailableSocialMedia } from "@/types/social-media";
+import { AvailableSocialMedia } from "@/types/app-social-media";
 import PublishDetailsMap from "@/utilities/PublishDetailsMap";
 import { twclass } from "@/utilities/twclass";
 import { FaArrowRight } from "react-icons/fa6";
@@ -29,6 +29,7 @@ export const AppPublishLink = ({
         size && "h-[44px]",
         publish.displayName === "Frontend Mentor" &&
           "text-appGreyD ring-1 ring-appBorder",
+        publish.value === "x" && "font-medium text-black",
       )}
       style={{ backgroundColor: publish.color }}
     >

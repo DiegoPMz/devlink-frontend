@@ -3,6 +3,7 @@ import generateLinkPopupToastIcon from "@/components/generateLinkPopupToastIcon"
 import { getPersistedTheme, ThemeAppValues } from "@/service/persist-theme";
 import { getPersistedState } from "@/service/persist-user";
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
+import { AvailableSocialMedia } from "@/types/app-social-media";
 import PublishDetailsMap from "@/utilities/PublishDetailsMap";
 import toast from "react-hot-toast";
 import { TbLinkOff, TbLinkPlus } from "react-icons/tb";

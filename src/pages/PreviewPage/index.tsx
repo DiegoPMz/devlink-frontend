@@ -4,7 +4,7 @@ import { AppButton } from "@/components/ui/AppButton";
 import { AppLink } from "@/components/ui/AppLink";
 import useProfileUpdateAnimation from "@/hooks/useProfileUpdateAnimation";
 import { useStoreApp } from "@/store";
-import { ArrayAvailableSocialMedia } from "@/types/social-media";
+import { ArrayAvailableSocialMedia } from "@/types/app-social-media";
 import { twclass } from "@/utilities/twclass";
 
 const PreviewPage = () => {

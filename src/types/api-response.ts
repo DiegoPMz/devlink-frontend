@@ -1,4 +1,4 @@
-import { AvailableSocialMedia } from "./social-media";
+import { AvailableSocialMedia } from "./app-social-media";
 
 export interface ProfileImage {
   id: string | null;

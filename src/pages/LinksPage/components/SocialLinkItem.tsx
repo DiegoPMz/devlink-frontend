@@ -3,7 +3,7 @@ import { AppTextField } from "@/components/ui/AppTextField";
 import { useStoreApp } from "@/store";
 import { UserSliceType } from "@/store/userSlice";
 import { ProfileLinks } from "@/types/api-response";
-import { AvailableSocialMedia } from "@/types/social-media";
+import { AvailableSocialMedia } from "@/types/app-social-media";
 import PublishDetailsMap from "@/utilities/PublishDetailsMap";
 import socialMediaPlaceholders from "@/utilities/socialMediaPlaceholders";
 import { HiMiniBars2 } from "react-icons/hi2";

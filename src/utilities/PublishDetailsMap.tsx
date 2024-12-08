@@ -2,7 +2,9 @@ import { BiLogoDevTo } from "react-icons/bi";
 import {
   FaFacebook,
   FaFreeCodeCamp,
+  FaInstagram,
   FaStackOverflow,
+  FaTiktok,
   FaTwitch,
   FaYoutube,
 } from "react-icons/fa";
@@ -12,7 +14,7 @@ import { LiaCodepen } from "react-icons/lia";
 import { SiCodewars, SiFrontendmentor } from "react-icons/si";
 import { TbBrandGithubFilled } from "react-icons/tb";
 
-import { AvailableSocialMedia } from "@/types/social-media";
+import { AvailableSocialMedia } from "@/types/app-social-media";
 
 export interface PublishDetailAttributes {
   displayName: string;
@@ -60,7 +62,7 @@ const PublishDetailsMap: Record<AvailableSocialMedia, PublishDetailAttributes> =
       value: "frontendmentor",
     },
     github: {
-      color: "#1A1A1A",
+      color: "#2b3137",
       displayName: "GitHub",
       icon: <TbBrandGithubFilled className="h-[20px] w-[20px]" />,
       value: "github",
@@ -76,6 +78,12 @@ const PublishDetailsMap: Record<AvailableSocialMedia, PublishDetailAttributes> =
       displayName: "Hashnode",
       icon: <FaHashnode className="h-[20px] w-[20px]" />,
       value: "hashnode",
+    },
+    instagram: {
+      color: "#C13584",
+      displayName: "Instagram",
+      icon: <FaInstagram className="h-[20px] w-[20px]" />,
+      value: "instagram",
     },
     linkedin: {
       color: "#2D68FF",
@@ -95,11 +103,17 @@ const PublishDetailsMap: Record<AvailableSocialMedia, PublishDetailAttributes> =
       icon: <FaTwitch className="h-[20px] w-[20px]" />,
       value: "twitch",
     },
-    twitter: {
-      color: "#43B7E9",
-      displayName: "Twitter",
+    tiktok: {
+      color: "#69C9D0",
+      displayName: "TikTok",
+      icon: <FaTiktok className="h-[20px] w-[20px]" />,
+      value: "tiktok",
+    },
+    x: {
+      color: "#e7e9ea",
+      displayName: "X",
       icon: <FaSquareXTwitter className="h-[20px] w-[20px]" />,
-      value: "twitter",
+      value: "x",
     },
     youtube: {
       color: "#EE3939",
