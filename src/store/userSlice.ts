@@ -1,9 +1,12 @@
 import generateLinkPopupMessage from "@/components/generateLinkPopupMessage";
 import generateLinkPopupToastIcon from "@/components/generateLinkPopupToastIcon";
+import { profileUpdateSchemaType } from "@/schemas/app-profile-schemas";
+import { apiUpdateTemplateService } from "@/service/api-service";
 import { getPersistedTheme, ThemeAppValues } from "@/service/persist-theme";
 import { getPersistedState } from "@/service/persist-user";
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
 import { AvailableSocialMedia } from "@/types/app-social-media";
+import handleApiWithToast from "@/utilities/handleApiWithToast";
 import PublishDetailsMap from "@/utilities/PublishDetailsMap";
 import toast from "react-hot-toast";
 import { TbLinkOff, TbLinkPlus } from "react-icons/tb";
@@ -32,6 +35,12 @@ type ProfileStateSomeValues = Pick<
   ProfileStateSomeKeys
 >[ProfileStateSomeKeys];
 
+interface SubmitProfileMethodResponse {
+  isError: boolean;
+  updated: boolean;
+  templateId: string | null;
+}
+
 interface UserSliceMethods {
   handleChangeTheme: (theme: ThemeAppValues) => void;
   generateLink: () => void;
@@ -44,10 +53,12 @@ interface UserSliceMethods {
     inputName: ProfileStateSomeKeys,
     value: ProfileStateSomeValues,
   ) => void;
-  isSubmissionAllowed: () => boolean;
 
   setProfileLinks: (links: ProfileLinks[]) => void;
-  handleLinkPopup: (linkId: ProfileLinks["id"]) => void;
+  handleLinkSortedToast: (linkId: ProfileLinks["id"]) => void;
+
+  isSubmissionAllowed: () => boolean;
+  handleSubmitProfile: () => Promise<SubmitProfileMethodResponse>;
 }
 export interface UserSliceType {
   user: UserSliceProfile & UserSliceMethods;
@@ -98,7 +109,6 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         },
       );
     },
-
     removeLink: (id) => {
       const allUserLinks = get().user.profile_links;
       const updatedLinks = allUserLinks.filter((link) => link.id !== id);
@@ -124,7 +134,6 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
 
       get().appErrors.clearInvalidLinkErrors(updatedLinks);
     },
-
     onChangeLink: (id, value) => {
       const userLinks = get().user.profile_links;
       const currentLinkModified = userLinks.find((link) => link.id === id);
@@ -146,6 +155,31 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         platform: value.platform,
         url: value.url,
       });
+    },
+    setProfileLinks(links) {
+      set((state) => ({ user: { ...state.user, profile_links: [...links] } }));
+    },
+    handleLinkSortedToast: (linkId) => {
+      const links = get().user.profile_links;
+
+      const linkModified = links.find((item) => item.id === linkId);
+      const linkPosition = links.findIndex((item) => item.id === linkId);
+
+      const platformDetails = Object.values(PublishDetailsMap).find(
+        (detail) => detail.value === linkModified?.platform,
+      );
+
+      if (!linkModified) return;
+
+      toast(
+        generateLinkPopupMessage({
+          bold: platformDetails?.displayName ?? "Empty link",
+          message: `updated to position #${linkPosition + 1}`,
+        }),
+        {
+          icon: generateLinkPopupToastIcon(platformDetails),
+        },
+      );
     },
 
     onChangeDetails: (inputName, value) => {
@@ -189,32 +223,71 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         !hasAppErrors
       );
     },
+    handleSubmitProfile: async () => {
+      const {
+        profile_email,
+        profile_name,
+        profile_last_name,
+        profile_links,
+        profile_file,
+        profile_image,
+      } = get().user;
 
-    setProfileLinks(links) {
-      set((state) => ({ user: { ...state.user, profile_links: [...links] } }));
-    },
+      const appErrors = get().appErrors.validateAllProfileDetails({
+        profile_email,
+        profile_name,
+        profile_last_name,
+        profile_links,
+        profile_file,
+        profile_image,
+      } as profileUpdateSchemaType);
 
-    handleLinkPopup: (linkId) => {
-      const links = get().user.profile_links;
+      if (appErrors) {
+        toast.error("Please check and fix the errors 😊");
 
-      const linkModified = links.find((item) => item.id === linkId);
-      const linkPosition = links.findIndex((item) => item.id === linkId);
+        return {
+          isError: true,
+          templateId: null,
+          updated: false,
+        };
+      }
 
-      const platformDetails = Object.values(PublishDetailsMap).find(
-        (detail) => detail.value === linkModified?.platform,
-      );
+      const response = await handleApiWithToast(
+        apiUpdateTemplateService(
+          {
+            profile_email,
+            profile_last_name,
+            profile_name,
+            profile_links: [
+              ...profile_links.map((link) => ({
+                platform: link.platform as AvailableSocialMedia,
+                url: link.url,
+              })),
+            ],
+          },
 
-      if (!linkModified) return;
-
-      toast(
-        generateLinkPopupMessage({
-          bold: platformDetails?.displayName ?? "Empty link",
-          message: `updated to position #${linkPosition + 1}`,
-        }),
+          profile_file ?? undefined,
+        ),
         {
-          icon: generateLinkPopupToastIcon(platformDetails),
+          loading: "Saving changes...",
+          error: "Couldn’t save changes",
+          success: "Profile saved!",
         },
       );
+
+      if (!response.data || response.error.isError) {
+        return {
+          isError: true,
+          updated: false,
+          templateId: null,
+        };
+      }
+
+      return {
+        isError: false,
+        updated: true,
+        templateId: response.data.profile_template,
+      };
     },
   },
 });
