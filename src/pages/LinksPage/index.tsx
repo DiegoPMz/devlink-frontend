@@ -1,3 +1,4 @@
+import DraggableList from "@/components/DraggableList";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppMainLayout } from "@/layouts/AppMainLayout";
 import { useStoreApp } from "@/store";
@@ -5,9 +6,14 @@ import { EmptyLinkContent } from "./components/EmptyLinkContent";
 import { SocialLinkItem } from "./components/SocialLinkItem";
 
 const LinksPage = () => {
-  const { profile_links, onChangeLink, generateLink, removeLink } = useStoreApp(
-    (state) => state.user,
-  );
+  const {
+    profile_links,
+    onChangeLink,
+    generateLink,
+    removeLink,
+    setProfileLinks,
+    handleLinkSortedToast,
+  } = useStoreApp((state) => state.user);
 
   return (
     <AppMainLayout>
@@ -29,18 +35,27 @@ const LinksPage = () => {
         {/* Content empty links */}
         {profile_links.length === 0 && <EmptyLinkContent />}
 
-        {profile_links.length >= 1 && (
-          <form className="flex flex-col gap-[24px]">
-            {profile_links.map((link, index) => (
-              <SocialLinkItem
-                key={link.id}
-                link={link}
-                position={index}
-                onChangeLink={onChangeLink}
-                removeLink={removeLink}
-              />
-            ))}
-          </form>
+        {profile_links.length > 0 && (
+          <DraggableList
+            draggableItems={profile_links}
+            onItemsUpdate={(stateSorted) => setProfileLinks(stateSorted)}
+            getReorderedItemId={(itemId) => handleLinkSortedToast(itemId)}
+          >
+            <ul className="flex flex-col gap-[24px]">
+              {profile_links.map((item, index) => (
+                <DraggableList.SortableItem key={item.id} id={item.id}>
+                  <li>
+                    <SocialLinkItem
+                      link={item}
+                      position={index}
+                      onChangeLink={onChangeLink}
+                      removeLink={removeLink}
+                    />
+                  </li>
+                </DraggableList.SortableItem>
+              ))}
+            </ul>
+          </DraggableList>
         )}
       </div>
     </AppMainLayout>
