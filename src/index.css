@@ -92,17 +92,182 @@
   --logo-text-color: rgb(220, 220, 220);
 }
 
+.pastel-theme {
+  --bg-color-primary: #b3bafd;
+  --bg-color-secondary: #aab2ff;
+
+  --txt-color-primary: #17505c;
+  --txt-color-secondary: #fff8c9;
+
+  --accent-primary-color: #84ffc9;
+  --accent-p-contrast-color: #2e3f38;
+  --accent-primary-color-h: #84ffcaa9;
+
+  --accent-secondary-color: #97d9e4;
+  --accent-s-contrast-color: #ffffff;
+
+  --error-primary-color: #ffe45e;
+
+  --ui-border-color: #c7dcf8;
+
+  --logo-text-color: #ffffff;
+}
+
 @layer utilities {
   .bg-appCustom {
     background-color: #fafafa;
     opacity: 1;
-    background-size: 66px 66px;
-    background-image: repeating-linear-gradient(
-      to right,
-      #f7f7f7,
-      #f7f7f7 3.3000000000000003px,
-      #fafafa 3.3000000000000003px,
-      #fafafa
-    );
+    background:
+      radial-gradient(
+        circle,
+        transparent 20%,
+        #fafafa 20%,
+        #fafafa 80%,
+        transparent 80%,
+        transparent
+      ),
+      radial-gradient(
+          circle,
+          transparent 20%,
+          #fafafa 20%,
+          #fafafa 80%,
+          transparent 80%,
+          transparent
+        )
+        37.5px 37.5px,
+      linear-gradient(#ffffff 3px, transparent 3px) 0 -1.5px,
+      linear-gradient(90deg, #ffffff 3px, #fafafa 3px) -1.5px 0;
+    background-size:
+      75px 75px,
+      75px 75px,
+      37.5px 37.5px,
+      37.5px 37.5px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 8px;
+    background-color: var(--bg-color-primary);
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    border-radius: 100vw;
+    background-color: var(--accent-primary-color);
+  }
+
+  .shadow-primary-color {
+    box-shadow: 0 2px 25px var(--accent-primary-color);
+  }
+
+  .template-custom-bg-one {
+    --s: 20px; /* control the size*/
+    --c1: var(--accent-primary-color);
+    --c2: var(--accent-secondary-color);
+
+    --_g: radial-gradient(calc(var(--s) / 2), var(--c1) 97%, #0000);
+    background:
+      var(--_g),
+      var(--_g) calc(2 * var(--s)) calc(2 * var(--s)),
+      repeating-conic-gradient(from 45deg, #0000 0 25%, var(--c2) 0 50%)
+        calc(-0.707 * var(--s)) calc(-0.707 * var(--s)),
+      repeating-linear-gradient(
+        135deg,
+        var(--c1) calc(var(--s) / -2) calc(var(--s) / 2),
+        var(--c2) 0 calc(2.328 * var(--s))
+      );
+    background-size: calc(4 * var(--s)) calc(4 * var(--s));
+  }
+
+  .template-custom-bg-two {
+    --s: 100px; /* control the size*/
+    --c1: var(--accent-secondary-color);
+    --c2: var(--accent-primary-color);
+
+    --_g: var(--c2) 6% 14%, var(--c1) 16% 24%, var(--c2) 26% 34%,
+      var(--c1) 36% 44%, var(--c2) 46% 54%, var(--c1) 56% 64%, var(--c2) 66% 74%,
+      var(--c1) 76% 84%, var(--c2) 86% 94%;
+    background:
+      radial-gradient(
+        100% 100% at 100% 0,
+        var(--c1) 4%,
+        var(--_g),
+        #0008 96%,
+        #0000
+      ),
+      radial-gradient(
+          100% 100% at 0 100%,
+          #0000,
+          #0008 4%,
+          var(--_g),
+          var(--c1) 96%
+        )
+        var(--c1);
+    background-size: var(--s) var(--s);
+  }
+
+  .template-custom-bg-three {
+    --s: 200px; /* control the size*/
+    --c1: var(--accent-primary-color);
+    --c2: var(--accent-secondary-color);
+
+    --_g: #0000 8%, var(--c1) 0 17%, #0000 0 58%;
+    background:
+      linear-gradient(135deg, #0000 20.5%, var(--c1) 0 29.5%, #0000 0) 0
+        calc(var(--s) / 4),
+      linear-gradient(45deg, var(--_g)) calc(var(--s) / 2) 0,
+      linear-gradient(135deg, var(--_g), var(--c1) 0 67%, #0000 0),
+      linear-gradient(
+        45deg,
+        var(--_g),
+        var(--c1) 0 67%,
+        #0000 0 83%,
+        var(--c1) 0 92%,
+        #0000 0
+      ),
+      var(--c2);
+    background-size: var(--s) var(--s);
+  }
+
+  .template-custom-bg-four {
+    --s: 50px; /* control the size*/
+    --c1: var(--accent-primary-color);
+    --c2: var(--accent-secondary-color);
+
+    --c: #0000 75%, var(--c1) 0;
+    --g1: conic-gradient(at 78% 3%, var(--c));
+    --g2: conic-gradient(at 3% 78%, var(--c));
+    background:
+      var(--g1),
+      var(--g1) var(--s) var(--s),
+      var(--g1) calc(2 * var(--s)) calc(2 * var(--s)),
+      var(--g1) calc(3 * var(--s)) calc(3 * var(--s)),
+      var(--g2) 0 calc(3 * var(--s)),
+      var(--g2) var(--s) 0,
+      var(--g2) calc(2 * var(--s)) var(--s),
+      var(--g2) calc(3 * var(--s)) calc(2 * var(--s)) var(--c2);
+    background-size: calc(4 * var(--s)) calc(4 * var(--s));
+  }
+
+  .template-custom-bg-five {
+    --s: 75px; /* control the size*/
+    --c1: var(--accent-p-contrast-color);
+    --c2: var(--accent-primary-color);
+    --c3: var(--accent-secondary-color);
+
+    --_c: #0000, var(--c1) 1deg 79deg, #0000 81deg;
+    --g0: conic-gradient(from 140deg at 50% 87.5%, var(--_c));
+    --g1: conic-gradient(from 140deg at 50% 81.25%, var(--_c));
+    --g2: conic-gradient(from 140deg at 50% 75%, var(--_c));
+    --g3: conic-gradient(at 10% 20%, #0000 75%, var(--c1) 0);
+    background:
+      var(--g0) 0 calc(var(--s) / -4),
+      var(--g0) var(--s) calc(3 * var(--s) / 4),
+      var(--g1),
+      var(--g1) var(--s) var(--s),
+      var(--g2) 0 calc(var(--s) / 4),
+      var(--g2) var(--s) calc(5 * var(--s) / 4),
+      var(--g3) calc(var(--s) / -10) var(--s),
+      var(--g3) calc(9 * var(--s) / 10) calc(2 * var(--s)),
+      repeating-conic-gradient(from 45deg, var(--c2) 0 25%, var(--c3) 0 50%);
+    background-size: calc(2 * var(--s)) calc(2 * var(--s));
   }
 }

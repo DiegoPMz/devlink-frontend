@@ -24,7 +24,7 @@ const PreviewPage = () => {
   return (
     <>
       <div className="relative flex min-h-dvh w-full flex-col bg-bg-color-primary md:items-center md:gap-[80px] md:pb-[24px] lg:gap-[120px]">
-        <div className="fixed top-0 z-[5] hidden h-[357px] w-full rounded-b-3xl bg-accent-primary-color bg-fixed md:block" />
+        <div className="template-custom-bg-four fixed top-0 z-[5] hidden h-[400px] w-full rounded-b-3xl md:block" />
         <div className="z-[10] min-w-full md:p-[24px]">
           <div className="flex justify-between gap-[16px] px-[24px] py-[16px] md:rounded-lg md:bg-bg-color-primary">
             <div className="w-full md:w-fit">
@@ -43,7 +43,7 @@ const PreviewPage = () => {
           </div>
         </div>
 
-        <section className="z-[10] flex w-full flex-col items-center bg-bg-color-primary px-[56px] py-[48px] md:w-[349px] md:rounded-2xl md:shadow-md md:shadow-ui-border-color">
+        <section className="z-[10] flex w-full flex-col items-center bg-bg-color-primary px-[56px] py-[48px] md:w-[380px] md:rounded-2xl md:shadow-md md:shadow-ui-border-color">
           <AvatarImage
             imageUrl={profile_image.url ?? undefined}
             imageFile={profile_file ?? undefined}
