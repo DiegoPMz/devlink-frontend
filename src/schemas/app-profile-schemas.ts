@@ -1,4 +1,6 @@
 import { ArrayAvailableSocialMedia } from "@/types/app-social-media";
+import { TEMPLATE_BG_CLASSES } from "@/types/app-template-bg";
+import { APP_THEME_CLASSES } from "@/types/app-theme";
 import { regexPatterns } from "@/utilities/regex-social-media";
 import z from "zod";
 
@@ -16,6 +18,16 @@ export const profileEmailSchema = z
 
 export const profileFileSchema = z.instanceof(File, {
   message: "Please upload a valid file",
+});
+export const profileTemplateSchema = z
+  .string({ message: "The value must be a valid string" })
+  .uuid({ message: "The value must follow the correct format" });
+
+export const profileAppTheme = z.enum(APP_THEME_CLASSES, {
+  message: `Invalid value for profileAppTheme. Expected one of: ${APP_THEME_CLASSES.join(", ")}`,
+});
+export const profileTemplateBg = z.enum(TEMPLATE_BG_CLASSES, {
+  message: `Invalid value for profileTemplateBg. Expected one of: ${TEMPLATE_BG_CLASSES.join(", ")}`,
 });
 
 export const profileLinkSchema = z

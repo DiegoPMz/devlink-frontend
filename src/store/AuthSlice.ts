@@ -4,7 +4,6 @@ import {
   apiRefreshTokenService,
   apiRegisterService,
 } from "@/service/api-service";
-import { deletePersistedTheme } from "@/service/persist-theme";
 import {
   ApiLoginErrorResponse,
   ApiRegisterErrorResponse,
@@ -109,7 +108,6 @@ export const authSlice: AuthSliceBuildType = (set) => ({
     }));
 
     useStoreApp.persist.clearStorage();
-    deletePersistedTheme();
   },
 
   refreshToken: async () => {
@@ -131,6 +129,5 @@ export const authSlice: AuthSliceBuildType = (set) => ({
     }));
 
     useStoreApp.persist.clearStorage();
-    deletePersistedTheme();
   },
 });

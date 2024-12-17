@@ -1,33 +1,28 @@
-import { FaCheck } from "react-icons/fa";
-
-import {
-  getPersistedTheme,
-  persistTheme,
-  ThemeAppValues,
-} from "@/service/persist-theme";
-import { useStoreApp } from "@/store";
+import { ThemeAppTypes } from "@/types/app-theme";
 import { twclass } from "@/utilities/twclass";
 import { useState } from "react";
+import { FaCheck } from "react-icons/fa";
 
 interface ThemeObjectType {
-  value: ThemeAppValues;
+  value: ThemeAppTypes;
   displayName: string;
 }
 
 const THEMES_APP: ThemeObjectType[] = [
   { value: "default-theme", displayName: "Default" },
   { value: "dark-theme", displayName: "Dark" },
+  { value: "pastel-theme", displayName: "Pastel" },
   { value: "midnight-theme", displayName: "Midnight" },
 ];
 
-const ThemePicker = () => {
-  const handleChangeThemeStoreMd = useStoreApp(
-    (state) => state.user.handleChangeTheme,
-  );
+interface ThemePickerProps {
+  initialTheme: ThemeObjectType["value"];
+  handleChangeTheme?: (theme: ThemeAppTypes) => void;
+}
 
+const ThemePicker = ({ initialTheme, handleChangeTheme }: ThemePickerProps) => {
   const themePersisted =
-    THEMES_APP.find((theme) => theme.value === getPersistedTheme()) ??
-    THEMES_APP[0];
+    THEMES_APP.find((theme) => theme.value === initialTheme) ?? THEMES_APP[0];
 
   const [currentTheme, setCurrentTheme] =
     useState<ThemeObjectType>(themePersisted);
@@ -36,9 +31,7 @@ const ThemePicker = () => {
     if (!THEMES_APP.find((theme) => theme.value === themeSetting.value)) return;
 
     setCurrentTheme(themeSetting);
-    persistTheme(themeSetting.value);
-
-    handleChangeThemeStoreMd(themeSetting.value);
+    handleChangeTheme?.(themeSetting.value);
   };
 
   return (

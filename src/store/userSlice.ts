@@ -1,11 +1,16 @@
 import generateLinkPopupMessage from "@/components/generateLinkPopupMessage";
 import generateLinkPopupToastIcon from "@/components/generateLinkPopupToastIcon";
-import { profileUpdateSchemaType } from "@/schemas/app-profile-schemas";
+import {
+  profileAppTheme,
+  profileTemplateBg,
+  profileUpdateSchemaType,
+} from "@/schemas/app-profile-schemas";
 import { apiUpdateTemplateService } from "@/service/api-service";
-import { getPersistedTheme, ThemeAppValues } from "@/service/persist-theme";
 import { getPersistedState } from "@/service/persist-user";
 import { ProfileImage, ProfileLinks } from "@/types/api-response";
 import { AvailableSocialMedia } from "@/types/app-social-media";
+import { TemplateBgTypes } from "@/types/app-template-bg";
+import { ThemeAppTypes } from "@/types/app-theme";
 import handleApiWithToast from "@/utilities/handleApiWithToast";
 import PublishDetailsMap from "@/utilities/PublishDetailsMap";
 import toast from "react-hot-toast";
@@ -24,7 +29,8 @@ export interface UserSliceProfile {
   profile_links: ProfileLinks[] | [];
   profile_template: string | null;
   profile_file: null | File;
-  theme: ThemeAppValues;
+  theme: ThemeAppTypes;
+  template_bg: TemplateBgTypes;
 }
 type ProfileStateSomeKeys = keyof Pick<
   UserSliceProfile,
@@ -42,7 +48,7 @@ interface SubmitProfileMethodResponse {
 }
 
 interface UserSliceMethods {
-  handleChangeTheme: (theme: ThemeAppValues) => void;
+  handleChangeTheme: (theme: ThemeAppTypes) => void;
   generateLink: () => void;
   removeLink: (id: string) => void;
   onChangeLink: (
@@ -75,7 +81,6 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
   user: {
     ...getPersistedState(),
     profile_file: null,
-    theme: getPersistedTheme() ?? "default-theme",
     handleChangeTheme: (theme) => {
       set((state) => ({ user: { ...state.user, theme } }));
     },
@@ -231,7 +236,19 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         profile_links,
         profile_file,
         profile_image,
+        theme,
+        template_bg,
       } = get().user;
+
+      const validateTheme = profileAppTheme.safeParse(theme);
+      validateTheme.error &&
+        set((state) => ({ user: { ...state.user, theme: "default-theme" } }));
+
+      const validateTemplateBg = profileTemplateBg.safeParse(template_bg);
+      validateTemplateBg.error &&
+        set((state) => ({
+          user: { ...state.user, template_bg: "template-custom-bg-one" },
+        }));
 
       const appErrors = get().appErrors.validateAllProfileDetails({
         profile_email,
@@ -264,6 +281,8 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
                 url: link.url,
               })),
             ],
+            theme,
+            template_bg,
           },
 
           profile_file ?? undefined,

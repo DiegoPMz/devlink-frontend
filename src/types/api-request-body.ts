@@ -1,4 +1,6 @@
 import { AvailableSocialMedia } from "./app-social-media";
+import { TemplateBgTypes } from "./app-template-bg";
+import { ThemeAppTypes } from "./app-theme";
 
 export interface ApiLoginBody {
   email: string;
@@ -24,4 +26,6 @@ export interface ApiUpdateTemplate {
   profile_last_name: string;
   profile_links: ApiUpdateTemplateLink[];
   profile_image?: ApiUpdateTemplateImage;
+  theme: ThemeAppTypes;
+  template_bg: TemplateBgTypes;
 }
