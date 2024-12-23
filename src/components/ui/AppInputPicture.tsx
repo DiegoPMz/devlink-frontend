@@ -82,15 +82,15 @@ export const AppInputPicture = ({
       <div className="pointer-events-none absolute flex h-full w-full flex-col items-center justify-center">
         <AiOutlinePicture
           className={twclass(
-            "h-[40px] w-[40px] text-accent-primary-color",
-            currentImage && "text-accent-p-contrast-color",
+            "h-[40px] w-[40px] text-accent-s-contrast-color",
+            currentImage && "text-white",
             fileError.isError && "text-error-primary-color",
           )}
         />
         <span
           className={twclass(
-            "font-bold text-accent-primary-color",
-            currentImage && "text-accent-p-contrast-color",
+            "font-bold text-accent-s-contrast-color",
+            currentImage && "text-white",
             fileError.isError && "text-error-primary-color",
           )}
         >

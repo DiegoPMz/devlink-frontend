@@ -10,11 +10,11 @@ export const AppLink = ({ variant = "primary", ...props }: AppLinkProps) => {
     <Link
       {...props}
       className={twclass(
-        "flex h-full w-full items-center justify-center rounded-lg px-[24px] py-[8px] duration-200 ease-in disabled:pointer-events-none",
+        "flex h-full w-full items-center justify-center rounded-lg px-[24px] py-[8px] font-semibold duration-200 ease-in disabled:pointer-events-none",
         variant === "primary" &&
-          "text-accent-p-contrast-color bg-accent-primary-color transition-opacity active:opacity-50 disabled:opacity-50",
+          "bg-accent-primary-color text-accent-p-contrast-color transition-opacity active:opacity-50 disabled:opacity-50",
         variant === "secondary" &&
-          "text-accent-s-contrast-color font-semibold ring-1 ring-accent-primary-color transition-colors active:bg-accent-secondary-color disabled:opacity-25",
+          "text-accent-s-contrast-color ring-1 ring-accent-primary-color transition-colors active:bg-accent-secondary-color disabled:opacity-25",
       )}
     >
       {props.children}

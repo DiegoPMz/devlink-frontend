@@ -68,7 +68,7 @@ const PublishDetailsMap: Record<AvailableSocialMedia, PublishDetailAttributes> =
       value: "github",
     },
     gitlab: {
-      color: "#EB4925",
+      color: "#e24329",
       displayName: "GitLab",
       icon: <FaGitlab className="h-[20px] w-[20px]" />,
       value: "gitlab",

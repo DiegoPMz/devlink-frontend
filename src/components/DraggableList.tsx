@@ -1,3 +1,4 @@
+import { twclass } from "@/utilities/twclass";
 import {
   closestCenter,
   DndContext,
@@ -26,7 +27,7 @@ interface DraggableListProps<I> {
   getReorderedItemId?: (itemId: ItemStructure["id"]) => void;
 }
 
-const DraggableList = <I,>({
+export const DraggableList = <I,>({
   draggableItems,
   onItemsUpdate,
   getReorderedItemId,
@@ -79,12 +80,15 @@ const DraggableList = <I,>({
   );
 };
 
-export default DraggableList;
-DraggableList.SortableItem = SortableItem;
-
 function SortableItem(props: React.PropsWithChildren & { id: string }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: props.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: props.id });
 
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -92,8 +96,18 @@ function SortableItem(props: React.PropsWithChildren & { id: string }) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div
+      className={twclass(
+        isDragging && "outline-dashed outline-2 outline-ui-border-color",
+      )}
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       {props.children}
     </div>
   );
 }
+
+DraggableList.SortableItem = SortableItem;

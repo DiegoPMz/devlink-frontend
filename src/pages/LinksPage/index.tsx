@@ -1,4 +1,4 @@
-import DraggableList from "@/components/DraggableList";
+import { DraggableList } from "@/components/DraggableList";
 import { AppButton } from "@/components/ui/AppButton";
 import { AppMainLayout } from "@/layouts/AppMainLayout";
 import { useStoreApp } from "@/store";

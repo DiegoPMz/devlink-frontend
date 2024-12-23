@@ -33,7 +33,7 @@ export const PreviewLinks = () => {
           />
         </div>
 
-        <div className="flex w-full max-w-full flex-col items-center gap-[12px] pt-[25px]">
+        <div className="flex w-full max-w-full flex-col items-center gap-[12px] px-[21px] pt-[25px]">
           {isValidName ? (
             <span className="w-full text-pretty break-words text-center font-semibold leading-none text-txt-color-secondary">
               {`${profile_name} ${profile_last_name}`}

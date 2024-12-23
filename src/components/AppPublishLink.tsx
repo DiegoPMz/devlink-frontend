@@ -15,7 +15,8 @@ export const AppPublishLink = ({
   size,
 }: AppPublishLinkProps) => {
   const publish = PublishDetailsMap[socialMedia];
-  if (!publish) throw new Error("Invalid parameter social media");
+  if (!publish)
+    console.log(">>> AppPublishLink. Invalid parameter social media ");
 
   const Container = link ? "a" : "div";
 
@@ -27,6 +28,7 @@ export const AppPublishLink = ({
       className={twclass(
         "flex h-[56px] min-w-[237px] items-center justify-between rounded-lg p-[16px] text-white",
         size && "h-[44px]",
+        link && "transition-transform ease-out hover:scale-105",
         publish.displayName === "Frontend Mentor" &&
           "text-appGreyD ring-1 ring-appBorder",
         publish.value === "x" && "font-medium text-black",
