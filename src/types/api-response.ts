@@ -1,4 +1,6 @@
 import { AvailableSocialMedia } from "./app-social-media";
+import { TemplateBgTypes } from "./app-template-bg";
+import { ThemeAppTypes } from "./app-theme";
 
 export interface ProfileImage {
   id: string | null;
@@ -9,9 +11,14 @@ export interface ProfileLinks {
   url: string;
   id: string;
 }
+
+export interface Credentials {
+  roles: string;
+}
+
 export interface ApisGeneralResponse {
   id: string;
-  credentials: string;
+  credentials: Credentials;
   email: string;
   profile_email: string;
   profile_name: string;
@@ -19,6 +26,8 @@ export interface ApisGeneralResponse {
   profile_image: ProfileImage;
   profile_links: ProfileLinks[] | [];
   profile_template: string | null;
+  theme: ThemeAppTypes;
+  template_bg: TemplateBgTypes;
 }
 
 interface ApiCreatedAtResponse extends ApisGeneralResponse {
@@ -38,9 +47,13 @@ type NonNullableProfileImage = {
   [K in keyof ProfileImage]: NonNullable<ProfileImage[K]>;
 };
 export interface ApisGeneralResponseNoNulls
-  extends Omit<ApisGeneralResponse, "profile_image" | "profile_links"> {
+  extends Omit<
+    ApisGeneralResponse,
+    "profile_image" | "profile_links" | "profile_template"
+  > {
   profile_image: NonNullableProfileImage;
   profile_links: ProfileLinks[];
+  profile_template: string;
 }
 
 export interface ApiUpdateTemplateResponse extends ApisGeneralResponseNoNulls {

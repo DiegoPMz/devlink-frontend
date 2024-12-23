@@ -7,7 +7,7 @@ import {
 } from "@/schemas/app-profile-schemas";
 import { apiUpdateTemplateService } from "@/service/api-service";
 import { getPersistedState } from "@/service/persist-user";
-import { ProfileImage, ProfileLinks } from "@/types/api-response";
+import { Credentials, ProfileImage, ProfileLinks } from "@/types/api-response";
 import { AvailableSocialMedia } from "@/types/app-social-media";
 import { TemplateBgTypes } from "@/types/app-template-bg";
 import { ThemeAppTypes } from "@/types/app-theme";
@@ -21,7 +21,7 @@ import { ErrorSliceType } from "./errorSlice";
 
 export interface UserSliceProfile {
   id: string | null;
-  credentials: string | null;
+  credentials: Credentials | null;
   profile_email: string;
   profile_name: string;
   profile_last_name: string;
@@ -42,13 +42,15 @@ type ProfileStateSomeValues = Pick<
 >[ProfileStateSomeKeys];
 
 interface SubmitProfileMethodResponse {
-  isError: boolean;
+  hasError: boolean;
   updated: boolean;
   templateId: string | null;
 }
 
 interface UserSliceMethods {
   handleChangeTheme: (theme: ThemeAppTypes) => void;
+  handleChangeTemplateBg: (templateBg: UserSliceProfile["template_bg"]) => void;
+
   generateLink: () => void;
   removeLink: (id: string) => void;
   onChangeLink: (
@@ -84,6 +86,9 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
     handleChangeTheme: (theme) => {
       set((state) => ({ user: { ...state.user, theme } }));
     },
+    handleChangeTemplateBg: (templateBg) => {
+      set((state) => ({ user: { ...state.user, template_bg: templateBg } }));
+    },
 
     generateLink: () => {
       const UUID = crypto.randomUUID();
@@ -106,7 +111,10 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       toast(
         generateLinkPopupMessage({
           bold: "Link added",
-          message: linkPosition ? `on position #${linkPosition + 1}` : "🤷‍♂️",
+          message:
+            linkPosition !== undefined
+              ? `on position #${linkPosition + 1}`
+              : "🤷‍♂️",
         }),
 
         {
@@ -263,7 +271,7 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         toast.error("Please check and fix the errors 😊");
 
         return {
-          isError: true,
+          hasError: true,
           templateId: null,
           updated: false,
         };
@@ -296,14 +304,14 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
 
       if (!response.data || response.error.isError) {
         return {
-          isError: true,
+          hasError: true,
           updated: false,
           templateId: null,
         };
       }
 
       return {
-        isError: false,
+        hasError: false,
         updated: true,
         templateId: response.data.profile_template,
       };

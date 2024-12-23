@@ -25,7 +25,6 @@ export interface ApiUpdateTemplate {
   profile_name: string;
   profile_last_name: string;
   profile_links: ApiUpdateTemplateLink[];
-  profile_image?: ApiUpdateTemplateImage;
   theme: ThemeAppTypes;
   template_bg: TemplateBgTypes;
 }
