@@ -126,11 +126,11 @@ const LoginPage = () => {
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-[24px]">
           <div>
-            <label className="text-xs text-appGreyD" htmlFor="Email address">
+            <label className="text-xs text-appGreyD" htmlFor="email-address">
               Email address
             </label>
             <AppTextField
-              name="email"
+              id="email-address"
               value={loginData.email}
               onChange={(e) => handleChange("email", e)}
               placeholder="e.g. alex@email.com"
@@ -140,11 +140,12 @@ const LoginPage = () => {
           </div>
 
           <div>
-            <label className="text-xs text-appGreyD" htmlFor="Password">
+            <label className="text-xs text-appGreyD" htmlFor="password">
               Password
             </label>
             <AppTextField
               type="password"
+              id="password"
               value={loginData.password}
               onChange={(e) => handleChange("password", e)}
               placeholder="Enter your password"
