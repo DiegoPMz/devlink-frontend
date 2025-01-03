@@ -1,11 +1,12 @@
 import { AppPublishLink } from "@/components/AppPublishLink";
 import { AvatarImage } from "@/components/AvatarImage";
 import { AppButton } from "@/components/ui/AppButton";
-import { AppLink } from "@/components/ui/AppLink";
 import useProfileUpdateAnimation from "@/hooks/useProfileUpdateAnimation";
 import { useStoreApp } from "@/store";
 import { ArrayAvailableSocialMedia } from "@/types/app-social-media";
 import { twclass } from "@/utilities/twclass";
+import { useNavigate } from "react-router-dom";
+import { TemplateBgChanger } from "./components/TemplateBgChanger";
 
 const PreviewPage = () => {
   const {
@@ -15,8 +16,20 @@ const PreviewPage = () => {
     profile_last_name,
     profile_email,
     profile_links,
+    template_bg,
+    handleChangeTemplateBg,
     isSubmissionAllowed,
+    handleSubmitProfile,
   } = useStoreApp((state) => state.user);
+
+  const navigate = useNavigate();
+
+  const handleShareProfile = async () => {
+    const submitResponse = await handleSubmitProfile();
+    if (submitResponse.hasError) return;
+
+    return navigate(`/template/${submitResponse.templateId}`);
+  };
 
   const emptyAnimation = useProfileUpdateAnimation();
   const isValidName = profile_name && profile_last_name;
@@ -24,23 +37,44 @@ const PreviewPage = () => {
   return (
     <>
       <div className="relative flex min-h-dvh w-full flex-col bg-bg-color-primary md:items-center md:gap-[80px] md:pb-[24px] lg:gap-[120px]">
-        <div className="template-custom-bg-four fixed top-0 z-[5] hidden h-[400px] w-full rounded-b-3xl md:block" />
+        <div
+          className={twclass(
+            template_bg,
+            "fixed top-0 z-[5] hidden h-[400px] w-full rounded-b-3xl md:block",
+          )}
+        />
+
         <div className="z-[10] min-w-full md:p-[24px]">
           <div className="flex justify-between gap-[16px] px-[24px] py-[16px] md:rounded-lg md:bg-bg-color-primary">
             <div className="w-full md:w-fit">
-              <AppLink to={"/profile"} variant="primary">
+              <AppButton variant="primary" onClick={() => navigate(-1)}>
                 Back to Editor
-              </AppLink>
+              </AppButton>
             </div>
             <div className="w-full md:w-fit">
               <AppButton
                 variant="secondary"
                 disabled={isSubmissionAllowed() === false}
+                onClick={handleShareProfile}
               >
                 Share Link
               </AppButton>
             </div>
           </div>
+        </div>
+
+        <div
+          key={template_bg}
+          className={twclass(
+            "fixed right-[24px] top-[100px] z-[20] aspect-square h-[50px] md:top-[200px] lg:h-[90px]",
+          )}
+        >
+          <TemplateBgChanger
+            currentTemplateBg={template_bg}
+            onchangeTemplateBg={(templateBg) =>
+              handleChangeTemplateBg(templateBg)
+            }
+          />
         </div>
 
         <section className="z-[10] flex w-full flex-col items-center bg-bg-color-primary px-[56px] py-[48px] md:w-[380px] md:rounded-2xl md:shadow-md md:shadow-ui-border-color">
