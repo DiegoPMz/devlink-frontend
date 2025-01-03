@@ -25,6 +25,11 @@ export const AvatarImage = ({
     );
   }
 
+  const displayedImage = () => {
+    if (imageFile) return URL.createObjectURL(imageFile);
+    return imageUrl;
+  };
+
   return (
     <div
       className={twclass(
@@ -34,7 +39,7 @@ export const AvatarImage = ({
     >
       <img
         className="aspect-square w-full rounded-full object-cover"
-        src={imageUrl ?? URL.createObjectURL(imageFile as File)}
+        src={displayedImage()}
       />
     </div>
   );

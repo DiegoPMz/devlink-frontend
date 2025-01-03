@@ -3,7 +3,9 @@ import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 export const ProtectedRoute = () => {
-  const { id, credentials } = useStoreApp((state) => state.user);
+  const credentials = useStoreApp((state) => state.user.credentials);
+  const id = useStoreApp((state) => state.user.id);
+
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -11,12 +13,14 @@ export const ProtectedRoute = () => {
   const noProtectedRoutes = pathname === "/" || pathname === "/signup";
 
   useEffect(() => {
-    if (!validCredential) return navigate("/");
+    if (!validCredential) {
+      return !noProtectedRoutes ? navigate("/") : navigate(pathname);
+    }
 
     if (noProtectedRoutes) {
       return navigate("/links", { replace: true });
     }
-  }, [validCredential, noProtectedRoutes, navigate]);
+  }, [validCredential, noProtectedRoutes, navigate, pathname]);
 
   return <Outlet />;
 };
