@@ -14,13 +14,18 @@ import { StateCreator } from "zustand";
 import { useStoreApp } from "./index";
 import { UserSliceType } from "./userSlice";
 
+interface RefreshTokenResponse {
+  status: number;
+  hasError: boolean;
+}
+
 interface AuthSliceMethods {
   login: (data: ApiLoginBody) => Promise<undefined | ApiLoginErrorResponse>;
   signup: (
     data: ApiRegisterBody,
   ) => Promise<undefined | ApiRegisterErrorResponse>;
   logout: () => void;
-  refreshToken: () => void;
+  refreshToken: () => Promise<RefreshTokenResponse>;
 }
 
 export interface AuthSliceType extends AuthSliceMethods {}
@@ -57,6 +62,9 @@ export const authSlice: AuthSliceBuildType = (set) => ({
         profile_image: userDb.profile_image,
         profile_links: userDb.profile_links,
         profile_template: userDb.profile_template,
+        theme: userDb.theme,
+        template_bg: userDb.template_bg,
+        profile_file: null,
       },
     }));
   },
@@ -104,6 +112,8 @@ export const authSlice: AuthSliceBuildType = (set) => ({
         profile_links: [],
         profile_template: null,
         profile_file: null,
+        theme: "default-theme",
+        template_bg: "template-custom-bg-one",
       },
     }));
 
@@ -112,22 +122,16 @@ export const authSlice: AuthSliceBuildType = (set) => ({
 
   refreshToken: async () => {
     const response = await apiRefreshTokenService();
-    if (!response.error.isError && response.data) return;
+    if (!response.error.isError && response.data) {
+      return {
+        status: 200,
+        hasError: false,
+      };
+    }
 
-    set((state) => ({
-      user: {
-        ...state.user,
-        credentials: null,
-        profile_email: "",
-        profile_image: { id: null, url: null },
-        profile_name: "",
-        profile_last_name: "",
-        profile_links: [],
-        profile_template: null,
-        profile_file: null,
-      },
-    }));
-
-    useStoreApp.persist.clearStorage();
+    return {
+      status: response.error.status,
+      hasError: true,
+    };
   },
 });

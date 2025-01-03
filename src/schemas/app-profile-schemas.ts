@@ -70,6 +70,8 @@ export const profileUpdateSchema = z
           .url({ message: "Invalid URL format" }),
       })
       .optional(),
+    theme: profileAppTheme,
+    template_bg: profileTemplateBg,
   })
   .refine((data) => data.profile_file || data.profile_image, {
     message: "At least one of 'profile_file' or 'profile_image' is required",
@@ -92,6 +94,8 @@ export const profileUpdateWithoutLinksSchema = z
           .url({ message: "Invalid URL format" }),
       })
       .optional(),
+    theme: profileAppTheme,
+    template_bg: profileTemplateBg,
   })
   .refine((data) => data.profile_file || data.profile_image, {
     message: "At least one of 'profile_file' or 'profile_image' is required",

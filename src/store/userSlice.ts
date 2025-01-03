@@ -1,11 +1,6 @@
 import generateLinkPopupMessage from "@/components/generateLinkPopupMessage";
 import generateLinkPopupToastIcon from "@/components/generateLinkPopupToastIcon";
-import {
-  profileAppTheme,
-  profileTemplateBg,
-  profileUpdateSchemaType,
-} from "@/schemas/app-profile-schemas";
-import { apiUpdateTemplateService } from "@/service/api-service";
+import { apiUpdateTemplateServiceWithToken } from "@/service/api-service";
 import { getPersistedState } from "@/service/persist-user";
 import { Credentials, ProfileImage, ProfileLinks } from "@/types/api-response";
 import { AvailableSocialMedia } from "@/types/app-social-media";
@@ -18,6 +13,7 @@ import { TbLinkOff, TbLinkPlus } from "react-icons/tb";
 import { StateCreator } from "zustand";
 import { AuthSliceType } from "./AuthSlice";
 import { ErrorSliceType } from "./errorSlice";
+import { useStoreApp } from "./index";
 
 export interface UserSliceProfile {
   id: string | null;
@@ -237,63 +233,82 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       );
     },
     handleSubmitProfile: async () => {
-      const {
-        profile_email,
-        profile_name,
-        profile_last_name,
-        profile_links,
-        profile_file,
-        profile_image,
-        theme,
-        template_bg,
-      } = get().user;
+      const ERROR_RESPONSE = {
+        hasError: true,
+        updated: false,
+        templateId: null,
+      };
 
-      const validateTheme = profileAppTheme.safeParse(theme);
-      validateTheme.error &&
-        set((state) => ({ user: { ...state.user, theme: "default-theme" } }));
-
-      const validateTemplateBg = profileTemplateBg.safeParse(template_bg);
-      validateTemplateBg.error &&
-        set((state) => ({
-          user: { ...state.user, template_bg: "template-custom-bg-one" },
-        }));
+      const stateUser = get().user;
+      if (!stateUser.id || !stateUser.credentials) return ERROR_RESPONSE;
 
       const appErrors = get().appErrors.validateAllProfileDetails({
-        profile_email,
-        profile_name,
-        profile_last_name,
-        profile_links,
-        profile_file,
-        profile_image,
-      } as profileUpdateSchemaType);
+        profile_email: stateUser.profile_email,
+        profile_name: stateUser.profile_name,
+        profile_last_name: stateUser.profile_last_name,
+        profile_links: stateUser.profile_links,
+        profile_file:
+          stateUser.profile_image.id && stateUser.profile_image.url
+            ? undefined
+            : stateUser.profile_file,
+        profile_image: stateUser.profile_image,
+        template_bg: stateUser.template_bg,
+        theme: stateUser.theme,
+      });
 
-      if (appErrors) {
+      const validAppErrors = () => {
+        if (!appErrors) return false;
+
+        const errorKeys = Object.keys(appErrors) as Array<
+          keyof typeof appErrors
+        >;
+        const getCurrentErrors = errorKeys.reduce((acc: Array<string>, key) => {
+          if (key === "profile_links") {
+            const areLinkErrors = appErrors.profile_links
+              .slice(0, 1)
+              .filter((link) => link.isErr);
+            return areLinkErrors.length > 0 ? [...acc, "profile_links"] : acc;
+          }
+
+          return appErrors[key].isErr ? [...acc, key] : acc;
+        }, []);
+
+        return getCurrentErrors.length === 1 && appErrors.profile_image.isErr;
+      };
+
+      if (appErrors && validAppErrors()) {
+        appErrors.template_bg.isErr &&
+          set((state) => ({
+            user: { ...state.user, template_bg: "template-custom-bg-one" },
+          }));
+
+        appErrors.theme.isErr &&
+          set((state) => ({
+            user: { ...state.user, theme: "default-theme" },
+          }));
+
         toast.error("Please check and fix the errors 😊");
 
-        return {
-          hasError: true,
-          templateId: null,
-          updated: false,
-        };
+        return ERROR_RESPONSE;
       }
 
       const response = await handleApiWithToast(
-        apiUpdateTemplateService(
+        apiUpdateTemplateServiceWithToken(
           {
-            profile_email,
-            profile_last_name,
-            profile_name,
+            profile_email: stateUser.profile_email,
+            profile_name: stateUser.profile_name,
+            profile_last_name: stateUser.profile_last_name,
             profile_links: [
-              ...profile_links.map((link) => ({
+              ...stateUser.profile_links.map((link) => ({
                 platform: link.platform as AvailableSocialMedia,
                 url: link.url,
               })),
             ],
-            theme,
-            template_bg,
+            theme: stateUser.theme,
+            template_bg: stateUser.template_bg,
           },
 
-          profile_file ?? undefined,
+          stateUser.profile_file ?? undefined,
         ),
         {
           loading: "Saving changes...",
@@ -302,13 +317,48 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
         },
       );
 
-      if (!response.data || response.error.isError) {
-        return {
-          hasError: true,
-          updated: false,
-          templateId: null,
-        };
+      if (response.error.isError || !response.data) {
+        if (response.error.status === 401 || response.error.status === 403) {
+          set((state) => ({
+            user: {
+              ...state.user,
+              credentials: null,
+              id: null,
+              profile_email: "",
+              profile_image: { id: null, url: null },
+              profile_name: "",
+              profile_last_name: "",
+              profile_links: [],
+              profile_template: null,
+              profile_file: null,
+              theme: "default-theme",
+              template_bg: "template-custom-bg-one",
+            },
+          }));
+
+          useStoreApp.persist.clearStorage();
+        }
+
+        return ERROR_RESPONSE;
       }
+
+      const dataRes = response.data;
+      set((state) => ({
+        user: {
+          ...state.user,
+          profile_email: dataRes.profile_email,
+          profile_name: dataRes.profile_name,
+          profile_last_name: dataRes.profile_last_name,
+          profile_links: dataRes.profile_links,
+          profile_template: dataRes.profile_template,
+          profile_image: dataRes.profile_image,
+          theme: dataRes.theme,
+          template_bg: dataRes.template_bg,
+          credentials: dataRes.credentials,
+          id: dataRes.id,
+          profile_file: null,
+        },
+      }));
 
       return {
         hasError: false,

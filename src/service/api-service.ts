@@ -120,6 +120,60 @@ export const apiUpdateTemplateService = async (
   return await apiMethodHandler(API, OPTIONS);
 };
 
+export const apiUpdateTemplateServiceWithToken = async (
+  body: ApiUpdateTemplate,
+  file?: File,
+): ApiServiceResponse<
+  ApiUpdateTemplateResponse,
+  ApiUpdateTemplateErrorResponse
+> => {
+  const formData = new FormData();
+  formData.append("data", JSON.stringify(body));
+  if (file) formData.append("user_file", file);
+
+  const API = `${API_BASE_URL}/template`;
+  const OPTIONS: RequestInit = {
+    credentials: "include",
+    method: "PUT",
+    headers: {
+      // prettier-ignore
+      "Accept": "application/json",
+    },
+    body: formData,
+  };
+
+  const servicePromise: ApiServiceResponse<
+    ApiUpdateTemplateResponse,
+    ApiUpdateTemplateErrorResponse
+  > = apiMethodHandler(API, OPTIONS);
+
+  const response = await servicePromise;
+
+  if (response.error.status === 401 || response.error.status === 403) {
+    const refreshTokenResponse = await apiRefreshTokenService();
+    const isRefreshError = refreshTokenResponse.error.isError;
+
+    return isRefreshError
+      ? {
+          data: null,
+          error: {
+            status: 401,
+            cause: {
+              status: 401,
+              cause: {
+                authentication:
+                  refreshTokenResponse.error.cause?.cause.authentication ?? "",
+              },
+            },
+            isError: true,
+          },
+        }
+      : await apiUpdateTemplateService(body, file);
+  }
+
+  return response;
+};
+
 export const apiGetTemplateService = async (
   paramID: string,
 ): ApiServiceResponse<ApiGetTemplateResponse, ApiGetTemplateErrorResponse> => {

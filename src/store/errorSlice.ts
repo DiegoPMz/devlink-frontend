@@ -4,9 +4,7 @@ import {
   profileLastNameSchema,
   profileLinkSchema,
   profileNameSchema,
-  profileUpdateSchemaType,
   profileUpdateWithoutLinksSchema,
-  profileUpdateWithoutLinksSchemaType,
 } from "@/schemas/app-profile-schemas";
 import { ProfileLinks } from "@/types/api-response";
 import schemaValidator from "@/utilities/schema-validator";
@@ -34,6 +32,22 @@ interface ErrorSliceState {
   profile_file: ErrorProfileDetails;
 }
 
+interface ValidateAllProfileDetailsData {
+  profile_email: UserSliceType["user"]["profile_email"];
+  profile_name: UserSliceType["user"]["profile_name"];
+  profile_last_name: UserSliceType["user"]["profile_last_name"];
+  profile_links: UserSliceType["user"]["profile_links"];
+  theme: UserSliceType["user"]["theme"];
+  template_bg: UserSliceType["user"]["template_bg"];
+  profile_file?: UserSliceType["user"]["profile_file"];
+  profile_image?: UserSliceType["user"]["profile_image"];
+}
+interface ValidateAllProfileDetailsResponse extends ErrorSliceState {
+  theme: ErrorProfileDetails;
+  template_bg: ErrorProfileDetails;
+  profile_image: ErrorProfileDetails;
+}
+
 interface ErrorSliceMethods {
   validateLink: (link: ProfileLinks) => void;
   getErrorLink: (id: ProfileLinks["id"]) => ErrorProfileLinks | null;
@@ -47,8 +61,8 @@ interface ErrorSliceMethods {
   ) => void;
 
   validateAllProfileDetails: (
-    data: profileUpdateSchemaType,
-  ) => ErrorSliceState | undefined;
+    data: ValidateAllProfileDetailsData,
+  ) => ValidateAllProfileDetailsResponse | undefined;
 }
 
 export interface ErrorSliceType {
@@ -214,6 +228,7 @@ export const errorSlice: ErrorSliceBuildType = (set, get) => ({
     },
 
     validateAllProfileDetails: (data) => {
+      const profileSchema = profileUpdateWithoutLinksSchema.safeParse(data);
       const currentLinkErrors = data.profile_links
         .map((link) => {
           const linkSchema = profileLinkSchema.safeParse(link);
@@ -233,41 +248,44 @@ export const errorSlice: ErrorSliceBuildType = (set, get) => ({
         })
         .filter((val) => val !== undefined);
 
-      const profileData: profileUpdateWithoutLinksSchemaType = {
-        profile_email: data.profile_email,
-        profile_last_name: data.profile_last_name,
-        profile_name: data.profile_name,
-        profile_file: data.profile_file,
-        profile_image: data.profile_image,
-      };
+      if (!profileSchema.error && currentLinkErrors.length === 0) return;
 
-      const profileSchema =
-        profileUpdateWithoutLinksSchema.safeParse(profileData);
-      if (!profileSchema.error || currentLinkErrors.length === 0)
-        return undefined;
-
-      const schemaErrors = profileSchema.error.format();
+      const schemaErrors = profileSchema.error?.format();
 
       const newErrorState: ErrorSliceState = {
-        profile_email: !schemaErrors.profile_email
+        profile_email: !schemaErrors?.profile_email
           ? PROFILE_DEFAULT_STATE
-          : { isErr: true, message: schemaErrors.profile_email._errors[0] },
-        profile_name: !schemaErrors.profile_name
+          : { isErr: true, message: schemaErrors?.profile_email._errors[0] },
+        profile_name: !schemaErrors?.profile_name
           ? PROFILE_DEFAULT_STATE
-          : { isErr: true, message: schemaErrors.profile_name._errors[0] },
-        profile_last_name: !schemaErrors.profile_last_name
+          : { isErr: true, message: schemaErrors?.profile_name._errors[0] },
+        profile_last_name: !schemaErrors?.profile_last_name
           ? PROFILE_DEFAULT_STATE
-          : { isErr: true, message: schemaErrors.profile_last_name._errors[0] },
-        profile_file: !schemaErrors.profile_file
+          : {
+              isErr: true,
+              message: schemaErrors?.profile_last_name._errors[0],
+            },
+        profile_file: !schemaErrors?.profile_file
           ? PROFILE_DEFAULT_STATE
-          : { isErr: true, message: schemaErrors.profile_file._errors[0] },
+          : { isErr: true, message: schemaErrors?.profile_file._errors[0] },
 
         profile_links: currentLinkErrors,
       };
 
       set((state) => ({ appErrors: { ...state.appErrors, ...newErrorState } }));
 
-      return newErrorState;
+      return {
+        ...newErrorState,
+        theme: !schemaErrors?.theme
+          ? PROFILE_DEFAULT_STATE
+          : { isErr: true, message: schemaErrors?.theme._errors[0] },
+        template_bg: !schemaErrors?.template_bg
+          ? PROFILE_DEFAULT_STATE
+          : { isErr: true, message: schemaErrors?.template_bg._errors[0] },
+        profile_image: !schemaErrors?.profile_image
+          ? PROFILE_DEFAULT_STATE
+          : { isErr: true, message: schemaErrors?.profile_image._errors[0] },
+      };
     },
   },
 });
