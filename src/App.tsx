@@ -3,6 +3,11 @@ import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import ThemeProvider from "./components/ThemeProvider";
+import { SkeletonLinksPage } from "./pages/LinksPage/components/SkeletonLinksPage";
+import { SkeletonLoginPage } from "./pages/LoginPage/components/SkeletonLoginPage";
+import { SkeletonPreviewPage } from "./pages/PreviewPage/components/SkeletonPreviewPage";
+import { SkeletonProfilePage } from "./pages/ProfilePage/components/SkeletonProfilePage";
+import { SkeletonRegisterPage } from "./pages/RegisterPage/components/SkeletonRegisterPage";
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
@@ -14,26 +19,59 @@ const TemplatePage = lazy(() => import("./pages/TemplatePage"));
 const App = () => {
   return (
     <>
-      <Suspense>
-        <Routes>
-          <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<LoginPage />} />
-            <Route path="/signup" element={<RegisterPage />} />
-
-            <Route element={<ThemeProvider />}>
-              <Route path="/links" element={<LinksPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/preview" element={<PreviewPage />} />
-            </Route>
-          </Route>
+      <Routes>
+        <Route element={<ProtectedRoutes />}>
           <Route
-            path="/template/:templateId"
-            element={<TemplatePage />}
-            errorElement
+            path="/"
+            element={
+              <Suspense fallback={<SkeletonLoginPage />}>
+                <LoginPage />
+              </Suspense>
+            }
           />
-          <Route path="*" element={<Navigate to={"/"} />} />
-        </Routes>
-      </Suspense>
+          <Route
+            path="/signup"
+            element={
+              <Suspense fallback={<SkeletonRegisterPage />}>
+                <RegisterPage />
+              </Suspense>
+            }
+          />
+
+          <Route element={<ThemeProvider />}>
+            <Route
+              path="/links"
+              element={
+                <Suspense fallback={<SkeletonLinksPage />}>
+                  <LinksPage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <Suspense fallback={<SkeletonProfilePage />}>
+                  <ProfilePage />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/preview"
+              element={
+                <Suspense fallback={<SkeletonPreviewPage />}>
+                  <PreviewPage />
+                </Suspense>
+              }
+            />
+          </Route>
+        </Route>
+        <Route
+          path="/template/:templateId"
+          element={<TemplatePage />}
+          errorElement
+        />
+        <Route path="*" element={<Navigate to={"/"} />} />
+      </Routes>
 
       <Toaster
         position="top-center"
