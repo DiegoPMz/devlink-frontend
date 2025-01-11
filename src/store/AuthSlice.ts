@@ -11,7 +11,6 @@ import {
 import { ApiLoginBody, ApiRegisterBody } from "@/types/api-request-body";
 import handleApiWithToast from "@/utilities/handleApiWithToast";
 import { StateCreator } from "zustand";
-import { useStoreApp } from "./index";
 import { UserSliceType } from "./userSlice";
 
 interface RefreshTokenResponse {
@@ -37,7 +36,7 @@ type AuthSliceBuildType = StateCreator<
   AuthSliceType
 >;
 
-export const authSlice: AuthSliceBuildType = (set) => ({
+export const authSlice: AuthSliceBuildType = (set, get) => ({
   login: async (data) => {
     const response = await handleApiWithToast(apiLoginService(data), {
       loading: "Logging in...",
@@ -99,25 +98,7 @@ export const authSlice: AuthSliceBuildType = (set) => ({
 
   logout: async () => {
     await apiLogoutService();
-
-    set((state) => ({
-      user: {
-        ...state.user,
-        id: null,
-        credentials: null,
-        profile_email: "",
-        profile_image: { id: null, url: null },
-        profile_name: "",
-        profile_last_name: "",
-        profile_links: [],
-        profile_template: null,
-        profile_file: null,
-        theme: "default-theme",
-        template_bg: "template-custom-bg-one",
-      },
-    }));
-
-    useStoreApp.persist.clearStorage();
+    get().user.clearState();
   },
 
   refreshToken: async () => {

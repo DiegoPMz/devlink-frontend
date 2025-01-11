@@ -1,6 +1,6 @@
 import generateLinkPopupMessage from "@/components/generateLinkPopupMessage";
 import generateLinkPopupToastIcon from "@/components/generateLinkPopupToastIcon";
-import { apiUpdateTemplateServiceWithToken } from "@/service/api-service";
+import { apiUpdateTemplateService } from "@/service/api-service";
 import { getPersistedState } from "@/service/persist-user";
 import { Credentials, ProfileImage, ProfileLinks } from "@/types/api-response";
 import { AvailableSocialMedia } from "@/types/app-social-media";
@@ -46,6 +46,7 @@ interface SubmitProfileMethodResponse {
 interface UserSliceMethods {
   handleChangeTheme: (theme: ThemeAppTypes) => void;
   handleChangeTemplateBg: (templateBg: UserSliceProfile["template_bg"]) => void;
+  clearState: () => void;
 
   generateLink: () => void;
   removeLink: (id: string) => void;
@@ -84,6 +85,26 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
     },
     handleChangeTemplateBg: (templateBg) => {
       set((state) => ({ user: { ...state.user, template_bg: templateBg } }));
+    },
+    clearState: () => {
+      set((state) => ({
+        user: {
+          ...state.user,
+          id: null,
+          credentials: null,
+          profile_email: "",
+          profile_image: { id: null, url: null },
+          profile_name: "",
+          profile_last_name: "",
+          profile_links: [],
+          profile_template: null,
+          profile_file: null,
+          theme: "default-theme",
+          template_bg: "template-custom-bg-one",
+        },
+      }));
+
+      useStoreApp.persist.clearStorage();
     },
 
     generateLink: () => {
@@ -293,7 +314,7 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       }
 
       const response = await handleApiWithToast(
-        apiUpdateTemplateServiceWithToken(
+        apiUpdateTemplateService(
           {
             profile_email: stateUser.profile_email,
             profile_name: stateUser.profile_name,
@@ -318,27 +339,8 @@ export const userSlice: UserSliceBuildType = (set, get) => ({
       );
 
       if (response.error.isError || !response.data) {
-        if (response.error.status === 401 || response.error.status === 403) {
-          set((state) => ({
-            user: {
-              ...state.user,
-              credentials: null,
-              id: null,
-              profile_email: "",
-              profile_image: { id: null, url: null },
-              profile_name: "",
-              profile_last_name: "",
-              profile_links: [],
-              profile_template: null,
-              profile_file: null,
-              theme: "default-theme",
-              template_bg: "template-custom-bg-one",
-            },
-          }));
-
-          useStoreApp.persist.clearStorage();
-        }
-
+        if (response.error.status === 401 || response.error.status === 403)
+          get().user.clearState();
         return ERROR_RESPONSE;
       }
 
