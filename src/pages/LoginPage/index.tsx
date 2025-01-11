@@ -99,10 +99,12 @@ const LoginPage = () => {
       };
     }
     if (errors?.email) {
-      setNewErrors = {
-        ...setNewErrors,
-        email: { err: true, message: errors.email },
-      };
+      if (errors.email !== errors.password) {
+        setNewErrors = {
+          ...setNewErrors,
+          email: { err: true, message: errors.email },
+        };
+      }
     }
 
     setError(setNewErrors);

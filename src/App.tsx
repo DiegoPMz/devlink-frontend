@@ -1,7 +1,8 @@
 import { lazy, Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AuthRefreshController } from "./components/AuthRefreshController";
+import { ProtectedRoutes } from "./components/ProtectedRoutes";
 import ThemeProvider from "./components/ThemeProvider";
 import { SkeletonLinksPage } from "./pages/LinksPage/components/SkeletonLinksPage";
 import { SkeletonLoginPage } from "./pages/LoginPage/components/SkeletonLoginPage";
@@ -20,7 +21,7 @@ const App = () => {
   return (
     <>
       <Routes>
-        <Route element={<ProtectedRoutes />}>
+        <Route Component={ProtectedRoutes}>
           <Route
             path="/"
             element={
@@ -38,37 +39,42 @@ const App = () => {
             }
           />
 
-          <Route element={<ThemeProvider />}>
-            <Route
-              path="/links"
-              element={
-                <Suspense fallback={<SkeletonLinksPage />}>
-                  <LinksPage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <Suspense fallback={<SkeletonProfilePage />}>
-                  <ProfilePage />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/preview"
-              element={
-                <Suspense fallback={<SkeletonPreviewPage />}>
-                  <PreviewPage />
-                </Suspense>
-              }
-            />
+          <Route Component={AuthRefreshController}>
+            <Route element={<ThemeProvider />}>
+              <Route
+                path="/links"
+                element={
+                  <Suspense fallback={<SkeletonLinksPage />}>
+                    <LinksPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <Suspense fallback={<SkeletonProfilePage />}>
+                    <ProfilePage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/preview"
+                element={
+                  <Suspense fallback={<SkeletonPreviewPage />}>
+                    <PreviewPage />
+                  </Suspense>
+                }
+              />
+            </Route>
           </Route>
         </Route>
         <Route
           path="/template/:templateId"
-          element={<TemplatePage />}
-          errorElement
+          element={
+            <Suspense>
+              <TemplatePage />
+            </Suspense>
+          }
         />
         <Route path="*" element={<Navigate to={"/"} />} />
       </Routes>
