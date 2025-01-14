@@ -86,10 +86,11 @@ const LoginPage = () => {
     const { email, password } = error;
     if (email.err || password.err) return;
 
-    const loginResponse = await storeLoginMethod(loginData);
-    if (!loginResponse) navigate("/links");
+    const hasLoginErrors = await storeLoginMethod(loginData);
+    if (!hasLoginErrors)
+      return navigate("/links", { state: { isAuthSuccessRedirect: true } });
 
-    const errors = loginResponse?.cause;
+    const errors = hasLoginErrors?.cause;
     let setNewErrors = { ...error };
 
     if (errors?.password) {
@@ -99,12 +100,11 @@ const LoginPage = () => {
       };
     }
     if (errors?.email) {
-      if (errors.email !== errors.password) {
-        setNewErrors = {
+      errors.email !== errors.password &&
+        (setNewErrors = {
           ...setNewErrors,
           email: { err: true, message: errors.email },
-        };
-      }
+        });
     }
 
     setError(setNewErrors);

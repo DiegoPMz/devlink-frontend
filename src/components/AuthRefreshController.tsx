@@ -14,6 +14,8 @@ export const AuthRefreshController = () => {
   const clearState = useStoreApp((state) => state.user.clearState);
 
   const location = useLocation();
+  const isAuthSuccessRedirect: true | undefined =
+    location.state?.isAuthSuccessRedirect;
   const isANotProtectedRoute = NOT_PROTECTED_ROUTES.includes(location.pathname);
 
   const hasValidCredentials = useCallback(() => {
@@ -33,6 +35,7 @@ export const AuthRefreshController = () => {
 
   useEffect(() => {
     if (isANotProtectedRoute || !hasValidCredentials()) return;
+    if (isAuthSuccessRedirect) return setIsPendingAuth(false);
 
     const triggerInitialService = async () => {
       const response = await authServiceCall();
@@ -45,7 +48,9 @@ export const AuthRefreshController = () => {
     };
 
     triggerInitialService();
-  }, [authServiceCall, hasValidCredentials, isANotProtectedRoute]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const TOKEN_EXPIRED_TIME = 9 * 60 * 1000;

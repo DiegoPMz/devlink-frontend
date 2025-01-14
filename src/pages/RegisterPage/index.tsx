@@ -111,7 +111,8 @@ const RegisterPage = () => {
     if (email.err || password.err || confirm_password.err) return;
 
     const registerFail = await storeSignupMethod(registerData);
-    if (!registerFail) return navigate("/links");
+    if (!registerFail)
+      return navigate("/links", { state: { isAuthSuccessRedirect: true } });
 
     const errors = registerFail.cause;
     let setNewErrors = { ...error };

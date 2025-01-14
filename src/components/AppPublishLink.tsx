@@ -16,7 +16,7 @@ export const AppPublishLink = ({
 }: AppPublishLinkProps) => {
   const publish = PublishDetailsMap[socialMedia];
   if (!publish)
-    console.log(">>> AppPublishLink. Invalid parameter social media ");
+    console.error(">>> AppPublishLink. Invalid parameter social media ");
 
   const Container = link ? "a" : "div";
 
