@@ -269,7 +269,7 @@ export const errorSlice: ErrorSliceBuildType = (set, get) => ({
           ? PROFILE_DEFAULT_STATE
           : { isErr: true, message: schemaErrors?.profile_file._errors[0] },
 
-        profile_links: currentLinkErrors,
+        profile_links: currentLinkErrors as ErrorProfileLinks[],
       };
 
       set((state) => ({ appErrors: { ...state.appErrors, ...newErrorState } }));
