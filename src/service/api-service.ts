@@ -61,7 +61,9 @@ export const apiRegisterService = async (
   return await apiMethodHandler(API, OPTIONS);
 };
 
-export const apiRefreshTokenService = async (): ApiServiceResponse<
+export const apiRefreshTokenService = async (
+  signal?: AbortSignal,
+): ApiServiceResponse<
   ApiRefreshTokenResponse,
   ApiRefreshTokenErrorResponse
 > => {
@@ -73,6 +75,7 @@ export const apiRefreshTokenService = async (): ApiServiceResponse<
       // prettier-ignore
       "Accept": "application/json",
     },
+    signal,
   };
 
   return await apiMethodHandler(API, OPTIONS);
