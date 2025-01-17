@@ -29,7 +29,7 @@ This project implements a **link-sharing application** where users can add, mana
 
 ### Live Demo :rocket:
 
-Check out the live application [here](https://your-live-demo-link.com).
+Check out the live application [here](https://devlink-frontend.vercel.app/).
 
 ---
 
