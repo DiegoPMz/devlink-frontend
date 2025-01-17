@@ -14,7 +14,7 @@ DevLinks is a platform that allows users to efficiently manage and share links. 
     - [Frontend:](#frontend)
     - [Development Tools:](#development-tools)
   - [Setup \& Installation ⚙️](#setup--installation-️)
-  - [Usage :traffic_light:](#usage-traffic_light)
+  - [Usage :vertical_traffic_light:](#usage-traffic_light)
   - [Project Structure :file_folder:](#project-structure-file_folder)
 
 ---
@@ -91,7 +91,7 @@ Follow these steps to get the project running locally:
 
 ---
 
-## Usage :traffic_light:
+## Usage :vertical_traffic_light:
 
 - **Manage Links**: Edit or delete links as needed.
 - **Responsive UI**: Access the app seamlessly on any device.
