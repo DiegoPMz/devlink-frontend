@@ -15,7 +15,7 @@ const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const LinksPage = lazy(() => import("./pages/LinksPage"));
 const ProfilePage = lazy(() => import("./pages/ProfilePage"));
 const PreviewPage = lazy(() => import("./pages/PreviewPage"));
-const TemplatePage = lazy(() => import("./pages/TemplatePage"));
+const TemplatePage = lazy(() => import("./pages/templatePage"));
 
 const App = () => {
   return (
