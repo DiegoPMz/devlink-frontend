@@ -57,8 +57,7 @@ export const AuthRefreshController = () => {
   }, []);
 
   useEffect(() => {
-    // const TOKEN_EXPIRED_TIME = 9 * 60 * 1000;
-    const TOKEN_EXPIRED_TIME = 2000;
+    const TOKEN_EXPIRED_TIME = 9 * 60 * 1000;
     let interval: NodeJS.Timeout | undefined = undefined;
 
     hasValidCredentials()
